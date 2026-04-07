@@ -1,0 +1,21 @@
+id: example-workflow
+name: 示例工作流
+description: 一个简单的示例工作流
+
+inputs:
+  question:
+    type: string
+    description: 用户问题
+    required: true
+
+steps:
+  - id: answer
+    name: 回答问题
+    type: agent
+    agent_id: my-assistant
+    message_template: |
+      {{question}}
+    output_key: answer
+
+output_template: |
+  {{answer}}
