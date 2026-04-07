@@ -1,0 +1,128 @@
+.treehole-page {
+  min-height: 100vh;
+  padding: 24px 24px 80px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #1d1d1d 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.treehole-page-complete {
+  justify-content: center;
+  background: linear-gradient(180deg, #f5f0e8 0%, #f0e6d3 100%);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #f5f0e8;
+  display: block;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #9a9a9a;
+  margin-top: 6px;
+  display: block;
+}
+
+.card-area {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 40px 0;
+}
+
+.card-area-animating .floating-card {
+  animation: floatAway 1.5s ease-out forwards;
+}
+
+.floating-card {
+  width: 120px;
+  height: 80px;
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+}
+
+.card-text {
+  font-size: 13px;
+  color: #5a5a5a;
+}
+
+@keyframes floatAway {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-30px) scale(0.9);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-60px) scale(0.7);
+    opacity: 0;
+  }
+}
+
+.action-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.throw-btn {
+  padding: 12px 36px;
+  background: #81b29a;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid #9a9a9a;
+  border-radius: 20px;
+  color: #9a9a9a;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.complete-content {
+  text-align: center;
+}
+
+.complete-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3d3d3d;
+  display: block;
+}
+
+.complete-hint {
+  font-size: 13px;
+  color: #7a7a7a;
+  margin-top: 10px;
+  display: block;
+}
+
+.close-btn {
+  padding: 10px 20px;
+  background: #81b29a;
+  border-radius: 16px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 24px;
+}

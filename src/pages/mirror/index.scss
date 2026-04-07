@@ -1,0 +1,103 @@
+.mirror-page {
+  min-height: 100vh;
+  padding: 24px 24px 80px;
+  background: linear-gradient(180deg, #f0e6d3 0%, #e8dcc8 100%);
+}
+
+.mirror-page-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #7a7a7a;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3d3d3d;
+}
+
+.prompt-area {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.prompt-text {
+  font-size: 12px;
+  color: #7a7a7a;
+}
+
+.mirror-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mirror-text {
+  font-size: 15px;
+  color: #3d3d3d;
+  line-height: 1.6;
+}
+
+.ai-tag {
+  font-size: 11px;
+  color: #9a9a9a;
+  margin-top: 12px;
+  display: block;
+}
+
+.note-area,
+.summary-area {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.note-label,
+.summary-label {
+  font-size: 11px;
+  color: #7a7a7a;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.note-text,
+.summary-text {
+  font-size: 13px;
+  color: #5a5a5a;
+  display: block;
+  line-height: 1.5;
+}
+
+.action-area {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.regenerate-btn {
+  padding: 10px 20px;
+  background: #f5f0e8;
+  border-radius: 20px;
+  color: #5a5a5a;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  padding: 10px 20px;
+  background: #81b29a;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}

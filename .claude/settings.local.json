@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx:*)",
+      "Bash(npm run:*)",
+      "WebSearch",
+      "WebFetch(domain:dribbble.com)",
+      "WebFetch(domain:www.calm.com)"
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+.index-page {
+  height: 100vh;
+  background: linear-gradient(180deg, #f8f5f0 0%, #f5f0e8 100%);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.header {
+  text-align: center;
+  padding: 24px 20px 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3d3d3d;
+  display: block;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #7a7a7a;
+  margin-top: 6px;
+  display: block;
+}
+
+.footer {
+  text-align: center;
+  padding: 12px;
+}
+
+.disclaimer {
+  font-size: 11px;
+  color: #9a9a9a;
+}
