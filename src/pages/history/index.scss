@@ -1,62 +1,62 @@
 .history-page {
   min-height: 100vh;
-  padding: 24px 24px 80px;
+  padding: 40px 40px 120px;
   background: linear-gradient(180deg, #f5f0e8 0%, #f0e6d3 100%);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .title {
-  font-size: 20px;
+  font-size: 40px;
   font-weight: 600;
   color: #3d3d3d;
   display: block;
 }
 
 .subtitle {
-  font-size: 12px;
+  font-size: 26px;
   color: #7a7a7a;
-  margin-top: 6px;
+  margin-top: 12px;
   display: block;
 }
 
 .empty-area {
   text-align: center;
-  padding: 48px 0;
+  padding: 80px 0;
 }
 
 .empty-text {
-  font-size: 15px;
+  font-size: 32px;
   color: #5a5a5a;
   display: block;
 }
 
 .empty-hint {
-  font-size: 13px;
+  font-size: 28px;
   color: #9a9a9a;
-  margin-top: 10px;
+  margin-top: 16px;
   display: block;
 }
 
 .card-list {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .history-card {
   background: #fff;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .history-card-done {
   opacity: 0.7;
-  border-left: 3px solid #81b29a;
+  border-left: 6px solid #81b29a;
 }
 
 .history-card-archived {
@@ -66,18 +66,18 @@
 .card-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 .card-date {
-  font-size: 11px;
+  font-size: 24px;
   color: #7a7a7a;
 }
 
 .card-status {
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 6px;
+  font-size: 22px;
+  padding: 4px 12px;
+  border-radius: 12px;
   background: #f5f0e8;
   color: #5a5a5a;
 }
@@ -93,26 +93,26 @@
 }
 
 .card-mirror {
-  font-size: 13px;
+  font-size: 28px;
   color: #3d3d3d;
   line-height: 1.5;
 }
 
 .card-action {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #e0e0e0;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid #e0e0e0;
 }
 
 .action-label {
-  font-size: 11px;
+  font-size: 24px;
   color: #7a7a7a;
 }
 
 .action-text {
-  font-size: 12px;
+  font-size: 26px;
   color: #5a5a5a;
-  margin-left: 6px;
+  margin-left: 8px;
 }
 
 .detail-modal {
@@ -130,14 +130,14 @@
 
 .modal-content {
   background: #fff;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 24px;
+  padding: 32px;
   width: 85%;
-  max-width: 300px;
+  max-width: 600px;
 }
 
 .modal-title {
-  font-size: 16px;
+  font-size: 32px;
   font-weight: 600;
   color: #3d3d3d;
   text-align: center;
@@ -145,26 +145,26 @@
 }
 
 .modal-mirror {
-  font-size: 13px;
+  font-size: 28px;
   color: #5a5a5a;
-  margin: 12px 0;
+  margin: 20px 0;
   line-height: 1.5;
 }
 
 .modal-actions {
   display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .modal-btn {
   flex: 1;
-  padding: 10px;
+  padding: 20px;
   background: #81b29a;
-  border-radius: 8px;
+  border-radius: 16px;
   color: #fff;
   text-align: center;
-  font-size: 13px;
+  font-size: 26px;
   cursor: pointer;
 }
 
@@ -175,21 +175,21 @@
 .modal-close {
   text-align: center;
   color: #7a7a7a;
-  font-size: 13px;
+  font-size: 26px;
   cursor: pointer;
 }
 
 .clear-area {
   text-align: center;
-  padding: 12px 0;
+  padding: 20px 0;
 }
 
 .clear-btn {
-  padding: 10px 20px;
+  padding: 20px 40px;
   background: transparent;
-  border: 1px solid #9a9a9a;
-  border-radius: 20px;
+  border: 2px solid #9a9a9a;
+  border-radius: 40px;
   color: #9a9a9a;
-  font-size: 13px;
+  font-size: 26px;
   cursor: pointer;
 }

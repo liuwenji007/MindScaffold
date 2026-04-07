@@ -1,36 +1,36 @@
 .question-slider {
-  padding: 16px 0;
+  padding: 24px 0;
 }
 
 .question-text {
-  font-size: 15px;
+  font-size: 32px;
   font-weight: 500;
   color: #3d3d3d;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   line-height: 1.5;
 }
 
 .slider-container {
-  padding: 0 8px;
+  padding: 0 16px;
 }
 
 .slider-labels {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .label-min,
 .label-max {
-  font-size: 11px;
+  font-size: 24px;
   color: #9a9a9a;
-  max-width: 80px;
+  max-width: 160px;
 }
 
 .label-value {
-  font-size: 18px;
+  font-size: 36px;
   font-weight: 600;
   color: #81b29a;
 }

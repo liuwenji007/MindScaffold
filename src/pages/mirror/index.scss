@@ -1,6 +1,6 @@
 .mirror-page {
   min-height: 100vh;
-  padding: 24px 24px 80px;
+  padding: 40px 40px 120px;
   background: linear-gradient(180deg, #f0e6d3 0%, #e8dcc8 100%);
 }
 
@@ -8,71 +8,72 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
+  font-size: 28px;
   color: #7a7a7a;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .title {
-  font-size: 20px;
+  font-size: 40px;
   font-weight: 600;
   color: #3d3d3d;
+  display: block;
 }
 
 .prompt-area {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .prompt-text {
-  font-size: 12px;
+  font-size: 26px;
   color: #7a7a7a;
 }
 
 .mirror-card {
   background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .mirror-text {
-  font-size: 15px;
+  font-size: 32px;
   color: #3d3d3d;
   line-height: 1.6;
 }
 
 .ai-tag {
-  font-size: 11px;
+  font-size: 22px;
   color: #9a9a9a;
-  margin-top: 12px;
+  margin-top: 20px;
   display: block;
 }
 
 .note-area,
 .summary-area {
   background: rgba(255, 255, 255, 0.5);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
 }
 
 .note-label,
 .summary-label {
-  font-size: 11px;
+  font-size: 24px;
   color: #7a7a7a;
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 }
 
 .note-text,
 .summary-text {
-  font-size: 13px;
+  font-size: 28px;
   color: #5a5a5a;
   display: block;
   line-height: 1.5;
@@ -81,23 +82,23 @@
 .action-area {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 20px;
 }
 
 .regenerate-btn {
-  padding: 10px 20px;
+  padding: 20px 40px;
   background: #f5f0e8;
-  border-radius: 20px;
+  border-radius: 40px;
   color: #5a5a5a;
-  font-size: 14px;
+  font-size: 28px;
   cursor: pointer;
 }
 
 .confirm-btn {
-  padding: 10px 20px;
+  padding: 20px 40px;
   background: #81b29a;
-  border-radius: 20px;
+  border-radius: 40px;
   color: #fff;
-  font-size: 14px;
+  font-size: 28px;
   cursor: pointer;
 }

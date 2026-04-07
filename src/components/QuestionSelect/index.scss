@@ -1,40 +1,40 @@
 .question-select {
-  padding: 16px 0;
+  padding: 24px 0;
 }
 
 .question-text {
-  font-size: 15px;
+  font-size: 32px;
   font-weight: 500;
   color: #3d3d3d;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   line-height: 1.5;
 }
 
 .hint {
-  font-size: 12px;
+  font-size: 24px;
   color: #9a9a9a;
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .options-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
 }
 
 .option-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  padding: 20px 28px;
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 40px;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 60px;
+  min-width: 120px;
 }
 
 .option-item-selected {
@@ -43,7 +43,7 @@
 }
 
 .option-text {
-  font-size: 13px;
+  font-size: 28px;
   color: #3d3d3d;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .check-mark {
-  margin-left: 6px;
-  font-size: 12px;
+  margin-left: 8px;
+  font-size: 24px;
   color: #81b29a;
 }

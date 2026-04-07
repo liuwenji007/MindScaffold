@@ -1,6 +1,6 @@
 .breakdown-page {
   min-height: 100vh;
-  padding: 20px 20px 40px;
+  padding: 32px 32px 60px;
   background: linear-gradient(180deg, #f5f0e8 0%, #f0e6d3 100%);
 }
 
@@ -8,58 +8,58 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
+  font-size: 28px;
   color: #7a7a7a;
 }
 
 .progress-section {
-  padding: 12px 0;
-  margin-bottom: 16px;
+  padding: 16px 0;
+  margin-bottom: 20px;
 }
 
 .progress-text {
-  font-size: 12px;
+  font-size: 24px;
   color: #7a7a7a;
   text-align: center;
   display: block;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .emotion-tag-section {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .emotion-tag {
-  font-size: 13px;
+  font-size: 26px;
   color: #81b29a;
   background: rgba(129, 178, 154, 0.15);
-  padding: 6px 16px;
-  border-radius: 16px;
+  padding: 12px 32px;
+  border-radius: 32px;
 }
 
 .question-section {
   background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 24px;
-  min-height: 280px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 32px;
+  min-height: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
 }
 
 .nav-buttons {
   display: flex;
-  gap: 12px;
-  padding: 0 8px;
+  gap: 20px;
+  padding: 0 16px;
 }
 
 .nav-btn {
   flex: 1;
-  height: 48px;
+  height: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 24px;
+  border-radius: 44px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -69,7 +69,7 @@
 }
 
 .nav-btn-prev Text {
-  font-size: 15px;
+  font-size: 30px;
   color: #5a5a5a;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .nav-btn-next Text {
-  font-size: 15px;
+  font-size: 30px;
   color: #fff;
   font-weight: 500;
 }
@@ -89,11 +89,11 @@
 
 .skip-section {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
 .skip-text {
-  font-size: 13px;
+  font-size: 26px;
   color: #9a9a9a;
   cursor: pointer;
 }

@@ -1,52 +1,52 @@
 .question-sort {
-  padding: 16px 0;
+  padding: 24px 0;
 }
 
 .question-text {
-  font-size: 15px;
+  font-size: 32px;
   font-weight: 500;
   color: #3d3d3d;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   line-height: 1.5;
 }
 
 .hint {
-  font-size: 12px;
+  font-size: 24px;
   color: #9a9a9a;
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .sort-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
 .sort-item {
   display: flex;
   align-items: center;
   background: #fff;
-  border-radius: 10px;
-  padding: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .rank-badge {
-  width: 28px;
-  height: 28px;
+  width: 56px;
+  height: 56px;
   background: #81b29a;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 12px;
+  margin-right: 20px;
   flex-shrink: 0;
 }
 
 .rank-num {
-  font-size: 13px;
+  font-size: 28px;
   font-weight: 600;
   color: #fff;
 }
@@ -56,25 +56,25 @@
 }
 
 .item-text {
-  font-size: 14px;
+  font-size: 28px;
   color: #3d3d3d;
 }
 
 .item-actions {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 .action-btn {
-  width: 28px;
-  height: 28px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f5f0e8;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 28px;
   color: #5a5a5a;
 }
 

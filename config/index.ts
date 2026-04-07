@@ -38,6 +38,12 @@ const config = {
         enable: true,
         config: {}
       },
+      pxtransform: {
+        enable: true,
+        config: {
+          // baseFontSize: 75
+        }
+      },
       cssModules: {
         enable: false,
         config: {
@@ -45,9 +51,6 @@ const config = {
           generateScopedName: '[name]__[local]__[hash:base64:5]'
         }
       }
-    },
-    router: {
-      mode: 'browser'
     }
   }
 };
