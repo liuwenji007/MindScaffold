@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '微行动'
+  navigationBarTitleText: '睡前最后一件事'
 });

@@ -1,7 +1,8 @@
 import Taro from '@tarojs/taro';
 
 // 统一存储接口
-const STORAGE_PREFIX = 'ms_';
+const STORAGE_PREFIX = 'awo_';
+const LEGACY_STORAGE_PREFIX = 'ms_';
 
 export const Storage = {
   // 同步存储
@@ -16,7 +17,17 @@ export const Storage = {
   // 同步读取
   get(key: string): string | null {
     try {
-      return Taro.getStorageSync(STORAGE_PREFIX + key) || null;
+      const nextValue = Taro.getStorageSync(STORAGE_PREFIX + key);
+      if (nextValue) {
+        return nextValue;
+      }
+      const legacyKey = LEGACY_STORAGE_PREFIX + key;
+      const legacyValue = Taro.getStorageSync(legacyKey);
+      if (legacyValue) {
+        Taro.setStorageSync(STORAGE_PREFIX + key, legacyValue);
+        Taro.removeStorageSync(legacyKey);
+      }
+      return legacyValue || null;
     } catch (e) {
       console.error('Storage get error:', e);
       return null;
@@ -27,6 +38,7 @@ export const Storage = {
   remove(key: string): void {
     try {
       Taro.removeStorageSync(STORAGE_PREFIX + key);
+      Taro.removeStorageSync(LEGACY_STORAGE_PREFIX + key);
     } catch (e) {
       console.error('Storage remove error:', e);
     }

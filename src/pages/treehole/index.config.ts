@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '树洞'
+  navigationBarTitleText: '睡吧，阿窝记得'
 });

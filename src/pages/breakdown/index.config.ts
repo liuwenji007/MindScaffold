@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '拆解'
+  navigationBarTitleText: '阿窝帮你理一理'
 });

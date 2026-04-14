@@ -11,7 +11,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#f8f5f0',
-    navigationBarTitleText: 'MindScaffold',
+    navigationBarTitleText: '阿窝睡了',
     navigationBarTextStyle: 'black'
   },
   tabBar: {

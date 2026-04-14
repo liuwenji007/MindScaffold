@@ -45,7 +45,7 @@ export default function QuestionSelect({
     <View className='question-select'>
       <Text className='question-text'>{question}</Text>
       {type === 'multi' && (
-        <Text className='hint'>（可多选，已选 {Array.isArray(selectedValue) ? selectedValue.length : 0} 项）</Text>
+        <Text className='hint'>（可以多选，先选最贴近的几项；已选 {Array.isArray(selectedValue) ? selectedValue.length : 0} 项）</Text>
       )}
 
       <View className='options-grid'>

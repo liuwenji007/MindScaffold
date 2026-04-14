@@ -45,10 +45,10 @@ export default function Treehole() {
     return (
       <View className='treehole-page-complete'>
         <View className='complete-content'>
-          <Text className='complete-text'>让它去吧</Text>
-          <Text className='complete-hint'>你已经放下了</Text>
+          <Text className='complete-text'>睡吧，阿窝记得</Text>
+          <Text className='complete-hint'>这份重量今晚先放在这里</Text>
           <View className='close-btn' onClick={handleClose}>
-            <Text>返回</Text>
+            <Text>回到阿窝</Text>
           </View>
         </View>
       </View>
@@ -59,8 +59,8 @@ export default function Treehole() {
     <View className='treehole-page'>
       {/* 标题 */}
       <View className='header'>
-        <Text className='title'>树洞</Text>
-        <Text className='subtitle'>把不想要的，轻轻放下</Text>
+        <Text className='title'>阿窝树洞</Text>
+        <Text className='subtitle'>把今晚不想带进梦里的，轻轻放下</Text>
       </View>
 
       {/* 卡片动画 */}
@@ -74,10 +74,10 @@ export default function Treehole() {
       {!isAnimating && (
         <View className='action-area'>
           <View className='throw-btn' onClick={handleThrow}>
-            <Text>扔进树洞</Text>
+            <Text>放进树洞</Text>
           </View>
           <View className='cancel-btn' onClick={handleClose}>
-            <Text>取消</Text>
+            <Text>先留着</Text>
           </View>
         </View>
       )}

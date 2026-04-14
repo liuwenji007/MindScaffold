@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '镜像重述'
+  navigationBarTitleText: '把今天存进枕头里'
 });

@@ -30,6 +30,7 @@ export default function QuestionSlider({
   return (
     <View className='question-slider'>
       <Text className='question-text'>{question}</Text>
+      <Text className='question-hint'>拖动到你此刻最接近的位置就好。</Text>
 
       <View className='slider-container'>
         <View className='slider-labels'>

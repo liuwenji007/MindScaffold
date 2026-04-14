@@ -25,8 +25,8 @@ export default function EmotionSwiper({ onSelect }: EmotionSwiperProps) {
     <View className='emotion-swiper-container'>
       {/* 引导语 */}
       <View className='guide-section'>
-        <Text className='guide-text'>此刻，心里有什么在轻轻叹气？</Text>
-        <Text className='guide-hint'>← 左右滑动选择情绪 →</Text>
+        <Text className='guide-text'>先把今天放下来，选一个最接近的感受。</Text>
+        <Text className='guide-hint'>← 左右滑动，慢慢看看哪个最贴近 →</Text>
       </View>
 
       {/* 滑动卡片 */}
@@ -60,7 +60,7 @@ export default function EmotionSwiper({ onSelect }: EmotionSwiperProps) {
 
       {/* 当前情绪信息 */}
       <View className='current-info'>
-        <Text className='emotion-label'>当前选择</Text>
+        <Text className='emotion-label'>今晚你更接近</Text>
         <Text className='emotion-current'>{currentEmotion.type}</Text>
       </View>
 
@@ -68,7 +68,7 @@ export default function EmotionSwiper({ onSelect }: EmotionSwiperProps) {
       <View className='note-section'>
         <Input
           className='note-input'
-          placeholder='想说点什么？（选填）'
+          placeholder='想补一句也可以（选填）'
           value={userNote}
           onInput={e => setUserNote(e.detail.value)}
           maxlength={200}
@@ -78,7 +78,7 @@ export default function EmotionSwiper({ onSelect }: EmotionSwiperProps) {
       {/* 确认按钮 */}
       <View className='confirm-section'>
         <View className='confirm-btn' onClick={handleConfirm}>
-          <Text className='confirm-btn-text'>选择这个情绪</Text>
+          <Text className='confirm-btn-text'>就这个感受</Text>
         </View>
       </View>
     </View>

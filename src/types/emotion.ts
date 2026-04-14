@@ -1,4 +1,4 @@
-// MindScaffold 类型定义
+// 阿窝睡了类型定义
 
 // 情绪入口记录
 export interface EmotionEntry {

@@ -27,7 +27,7 @@ export default function Profile() {
   const handleFeedback = () => {
     Taro.showModal({
       title: '反馈建议',
-      content: '如有问题或建议，请联系：feedback@mindscaffold.app',
+      content: '如有问题或建议，请通过应用商店留言联系我们。',
       showCancel: false
     });
   };
@@ -36,8 +36,8 @@ export default function Profile() {
     <View className='profile-page'>
       {/* 头部 */}
       <View className='header'>
-        <Text className='title'>MindScaffold</Text>
-        <Text className='subtitle'>心智脚手架</Text>
+        <Text className='title'>阿窝睡了</Text>
+        <Text className='subtitle'>每天睡前，来阿窝躺五分钟</Text>
       </View>
 
       {/* 功能列表 */}
@@ -77,8 +77,8 @@ export default function Profile() {
 
       {/* 底部 */}
       <View className='footer'>
-        <Text className='footer-text'>© 2026 MindScaffold</Text>
-        <Text className='footer-text'>用心呵护每一份情绪</Text>
+        <Text className='footer-text'>© 2026 阿窝睡了</Text>
+        <Text className='footer-text'>把乱糟糟的今天，交给阿窝</Text>
       </View>
 
       {/* 底部导航 */}

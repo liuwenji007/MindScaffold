@@ -1,7 +1,7 @@
 {
-  "name": "mindscaffold",
+  "name": "awo-shuile",
   "version": "1.0.0",
-  "description": "轻量级AI心智整理工具",
+  "description": "阿窝睡了：睡前情绪整理与微行动工具",
   "private": true,
   "scripts": {
     "dev:h5": "taro build --type h5 --watch",

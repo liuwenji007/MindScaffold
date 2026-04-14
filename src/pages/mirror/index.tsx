@@ -76,7 +76,7 @@ export default function Mirror() {
   if (isLoading) {
     return (
       <View className='mirror-page-loading'>
-        <Text>正在倾听...</Text>
+        <Text>阿窝在听，正在把今天轻轻放进枕头里...</Text>
       </View>
     );
   }
@@ -85,26 +85,26 @@ export default function Mirror() {
     <View className='mirror-page'>
       {/* 标题 */}
       <View className='header'>
-        <Text className='title'>镜子里的你</Text>
+        <Text className='title'>把今天存进枕头里</Text>
       </View>
 
       {/* 引导语 */}
       <View className='prompt-area'>
         <Text className='prompt-text'>
-          这是 AI 对你情绪的镜像重述，看看是否准确
+          这是阿窝为你整理的镜像重述，看看贴不贴近你的感受
         </Text>
       </View>
 
       {/* 镜像重述卡片 */}
       <View className='mirror-card'>
         <Text className='mirror-text'>{mirrorText}</Text>
-        <Text className='ai-tag'>AI生成内容，仅供参考</Text>
+        <Text className='ai-tag'>阿窝生成内容，仅供参考</Text>
       </View>
 
       {/* 用户回答摘要 */}
       {(contextPrompt || currentEntry?.userNote) && (
         <View className='summary-area'>
-          <Text className='summary-label'>你的回答：</Text>
+          <Text className='summary-label'>你刚刚说：</Text>
           <Text className='summary-text'>
             {contextPrompt || currentEntry?.userNote}
           </Text>
@@ -114,10 +114,10 @@ export default function Mirror() {
       {/* 操作按钮 */}
       <View className='action-area'>
         <View className='regenerate-btn' onClick={handleRegenerate}>
-          <Text>换一种说法</Text>
+          <Text>换一种更贴近的说法</Text>
         </View>
         <View className='confirm-btn' onClick={handleConfirm}>
-          <Text>是的，就是这样</Text>
+          <Text>是的，收进枕头里</Text>
         </View>
       </View>
     </View>

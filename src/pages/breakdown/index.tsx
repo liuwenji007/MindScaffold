@@ -142,7 +142,7 @@ export default function Breakdown() {
   if (questions.length === 0) {
     return (
       <View className='breakdown-page-loading'>
-        <Text>正在加载问题...</Text>
+        <Text>阿窝正在整理今晚的小问题...</Text>
       </View>
     );
   }
@@ -158,13 +158,13 @@ export default function Breakdown() {
           backgroundColor='#e0e0e0'
         />
         <Text className='progress-text'>
-          第 {currentStep + 1} / {questions.length} 步
+          阿窝帮你理一理：第 {currentStep + 1} / {questions.length} 步
         </Text>
       </View>
 
       {/* 情绪标签 */}
       <View className='emotion-tag-section'>
-        <Text className='emotion-tag'>当前情绪：{currentEntry?.emotion}</Text>
+        <Text className='emotion-tag'>今晚的感受：{currentEntry?.emotion}</Text>
       </View>
 
       {/* 问题区域 */}
@@ -176,18 +176,18 @@ export default function Breakdown() {
       <View className='nav-buttons'>
         {currentStep > 0 && (
           <View className='nav-btn-prev' onClick={handlePrev}>
-            <Text>上一步</Text>
+            <Text>退回上一小步</Text>
           </View>
         )}
         <View className={`nav-btn-next ${currentStep === 0 ? 'nav-btn-next-full' : ''}`} onClick={handleNext}>
-          <Text>{isLastStep ? '完成拆解' : '下一步'}</Text>
+          <Text>{isLastStep ? '收好这份整理' : '继续下一小步'}</Text>
         </View>
       </View>
 
       {/* 跳过提示 */}
       <View className='skip-section'>
         <Text className='skip-text' onClick={() => handleComplete()}>
-          跳过剩余问题
+          先跳过，直接去镜像重述
         </Text>
       </View>
     </View>

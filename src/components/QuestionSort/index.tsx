@@ -42,7 +42,7 @@ export default function QuestionSort({
   return (
     <View className='question-sort'>
       <Text className='question-text'>{question}</Text>
-      <Text className='hint'>（点击箭头调整顺序，第一项影响最大）</Text>
+      <Text className='hint'>（点箭头排一排，最想先放下的放在第一项）</Text>
 
       <View className='sort-list'>
         {sortedOptions.map((option, index) => (

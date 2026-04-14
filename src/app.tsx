@@ -1,5 +1,6 @@
 import { Component, ReactNode } from 'react';
 import Taro from '@tarojs/taro';
+import { migrateBrandStorageKeys } from '@/services/storage';
 import './app.scss';
 
 // 初始化 pxtransform，设置 html 的 font-size
@@ -21,7 +22,11 @@ interface AppProps {
 }
 
 class App extends Component<AppProps> {
-  componentDidMount() {}
+  componentDidMount() {
+    migrateBrandStorageKeys().catch(error => {
+      console.error('Failed to migrate storage keys:', error);
+    });
+  }
 
   componentDidShow() {}
 

@@ -54,7 +54,7 @@ export default function Action() {
 
   const handleConfirm = async () => {
     if (!selectedId) {
-      Taro.showToast({ title: '请选择一个行动', icon: 'none' });
+      Taro.showToast({ title: '先选一个今晚要做的小动作', icon: 'none' });
       return;
     }
 
@@ -80,7 +80,7 @@ export default function Action() {
 
     // 提示用户
     Taro.showToast({
-      title: `你的下一步：${selectedAction?.text}`,
+      title: `今晚就做：${selectedAction?.text}`,
       icon: 'none',
       duration: 3000
     });
@@ -99,7 +99,7 @@ export default function Action() {
   if (isLoading) {
     return (
       <View className='action-page-loading'>
-        <Text>正在为你寻找微小的下一步...</Text>
+        <Text>阿窝正在找一个今晚就能做的小动作...</Text>
       </View>
     );
   }
@@ -108,8 +108,8 @@ export default function Action() {
     <View className='action-page'>
       {/* 标题 */}
       <View className='header'>
-        <Text className='title'>一小步就好</Text>
-        <Text className='subtitle'>不需要解决所有问题，只要一个小小的行动</Text>
+        <Text className='title'>睡前最后一件事</Text>
+        <Text className='subtitle'>不用解决全部，只做一个现在就能完成的小动作</Text>
       </View>
 
       {/* 行动选项 */}
@@ -127,15 +127,15 @@ export default function Action() {
       </View>
 
       {/* AI 标识 */}
-      <Text className='ai-tag'>AI生成内容，仅供参考</Text>
+      <Text className='ai-tag'>阿窝生成内容，仅供参考</Text>
 
       {/* 操作按钮 */}
       <View className='action-area'>
         <View className='skip-btn' onClick={handleSkip}>
-          <Text>暂时不需要</Text>
+          <Text>今晚先不做</Text>
         </View>
         <View className='confirm-btn' onClick={handleConfirm}>
-          <Text>好的，我试试</Text>
+          <Text>就做这个</Text>
         </View>
       </View>
     </View>

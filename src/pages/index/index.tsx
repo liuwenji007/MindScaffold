@@ -27,8 +27,8 @@ export default function Index() {
     <View className='index-page'>
       {/* 头部区域 */}
       <View className='header'>
-        <Text className='title'>MindScaffold</Text>
-        <Text className='subtitle'>你不是一个人在面对，这里也没有压力</Text>
+        <Text className='title'>阿窝睡了</Text>
+        <Text className='subtitle'>把乱糟糟的今天，先轻轻放下来</Text>
       </View>
 
       {/* 情绪滑动选择器 */}

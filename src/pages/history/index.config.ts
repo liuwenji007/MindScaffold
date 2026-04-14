@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '历史记录'
+  navigationBarTitleText: '阿窝记得'
 });

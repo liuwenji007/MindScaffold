@@ -1,6 +1,6 @@
 // Taro 项目配置
 const config = {
-  projectName: 'mindscaffold',
+  projectName: 'awo-shuile',
   date: '2026-4-3',
   designWidth: 750,
   deviceRatio: {

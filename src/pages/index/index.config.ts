@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: 'MindScaffold'
+  navigationBarTitleText: '阿窝睡了'
 });
