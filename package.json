@@ -20,8 +20,10 @@
     "@tarojs/taro": "^4.1.11",
     "@tarojs/webpack5-runner": "^4.1.11",
     "idb-keyval": "^6.2.1",
+    "lucide-react-native": "^1.8.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-native-svg": "^15.15.4",
     "starcharge-forge": "^0.2.9",
     "uuid": "^9.0.1",
     "zustand": "^4.5.2"
@@ -41,6 +43,7 @@
     "postcss": "^8.5.8",
     "react-refresh": "^0.18.0",
     "sass": "^1.75.0",
+    "tsconfig-paths-webpack-plugin": "4.1.0",
     "typescript": "^5.4.5",
     "webpack": "^5.91.0"
   },

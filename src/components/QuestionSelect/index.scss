@@ -5,7 +5,7 @@
 .question-text {
   font-size: 32px;
   font-weight: 500;
-  color: #3d3d3d;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 12px;
   line-height: 1.5;
@@ -13,7 +13,7 @@
 
 .hint {
   font-size: 24px;
-  color: #9a9a9a;
+  color: var(--text-tertiary);
   display: block;
   margin-bottom: 24px;
 }
@@ -29,8 +29,8 @@
   align-items: center;
   justify-content: center;
   padding: 20px 28px;
-  background: #fff;
-  border: 2px solid #e0e0e0;
+  background: rgba(255, 253, 249, 0.82);
+  border: 2px solid var(--border-color);
   border-radius: 40px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -38,22 +38,23 @@
 }
 
 .option-item-selected {
-  background: rgba(129, 178, 154, 0.15);
-  border-color: #81b29a;
+  background: rgba(240, 163, 95, 0.16);
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 18px rgba(216, 155, 99, 0.18);
 }
 
 .option-text {
   font-size: 28px;
-  color: #3d3d3d;
+  color: var(--text-primary);
 }
 
 .option-text-selected {
-  color: #81b29a;
-  font-weight: 500;
+  color: var(--color-accent-deep);
+  font-weight: 600;
 }
 
 .check-mark {
   margin-left: 8px;
   font-size: 24px;
-  color: #81b29a;
+  color: var(--color-accent-deep);
 }

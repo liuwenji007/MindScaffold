@@ -5,7 +5,7 @@
 .question-text {
   font-size: 32px;
   font-weight: 500;
-  color: #3d3d3d;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 12px;
   line-height: 1.5;
@@ -13,7 +13,7 @@
 
 .hint {
   font-size: 24px;
-  color: #9a9a9a;
+  color: var(--text-tertiary);
   display: block;
   margin-bottom: 24px;
 }
@@ -27,16 +27,17 @@
 .sort-item {
   display: flex;
   align-items: center;
-  background: #fff;
-  border-radius: 20px;
+  background: var(--bg-card-soft);
+  border-radius: 22px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .rank-badge {
   width: 56px;
   height: 56px;
-  background: #81b29a;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -57,7 +58,7 @@
 
 .item-text {
   font-size: 28px;
-  color: #3d3d3d;
+  color: var(--text-primary);
 }
 
 .item-actions {
@@ -71,15 +72,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f0e8;
+  background: rgba(255, 252, 247, 0.8);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   cursor: pointer;
   font-size: 28px;
-  color: #5a5a5a;
+  color: var(--text-secondary);
 }
 
 .action-btn:active {
-  background: #e0e0e0;
+  background: rgba(240, 163, 95, 0.16);
 }
 
 .action-btn-disabled {

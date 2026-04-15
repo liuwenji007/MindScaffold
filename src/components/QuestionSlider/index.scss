@@ -5,10 +5,17 @@
 .question-text {
   font-size: 32px;
   font-weight: 500;
-  color: #3d3d3d;
+  color: var(--text-primary);
   display: block;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
   line-height: 1.5;
+}
+
+.question-hint {
+  display: block;
+  font-size: 24px;
+  color: var(--text-tertiary);
+  margin-bottom: 28px;
 }
 
 .slider-container {
@@ -25,14 +32,14 @@
 .label-min,
 .label-max {
   font-size: 24px;
-  color: #9a9a9a;
+  color: var(--text-tertiary);
   max-width: 160px;
 }
 
 .label-value {
   font-size: 36px;
   font-weight: 600;
-  color: #81b29a;
+  color: var(--color-accent-deep);
 }
 
 .slider {

@@ -1,47 +1,111 @@
-// 全局样式
+/* 与设计项目 `阿窝睡了` tailwind @theme 对齐 */
 page {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: #f8f5f0;
+  text-rendering: optimizeLegibility;
+  background-color: #0f1218;
 }
 
-// 全局 CSS 变量
 :root {
-  // 主色调
-  --color-primary: #81b29a;
-  --color-secondary: #e07a5f;
+  /* 设计稿 token */
+  --color-bg-deep: #151921;
+  --color-card-glass: rgba(255, 255, 255, 0.08);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+  --color-text-primary-design: #e0e6ed;
+  --color-text-secondary-design: #94a3b8;
+  --color-accent-warm: #ffb347;
+  --color-page-outer: #0f1218;
 
-  // 背景色
-  --bg-primary: #f8f5f0;
-  --bg-secondary: #f5f0e8;
-  --bg-card: #ffffff;
+  /* 映射到工程内既有变量名，便于各页 SCSS 少改 */
+  --color-primary: #ffb347;
+  --color-primary-soft: rgba(255, 179, 71, 0.22);
+  --color-accent: #ffc56a;
+  --color-accent-deep: #e69835;
+  --color-success: #6ee7a8;
 
-  // 文字颜色
-  --text-primary: #3d3d3d;
-  --text-secondary: #7a7a7a;
-  --text-tertiary: #9a9a9a;
+  --bg-primary: #0f1218;
+  --bg-secondary: #151921;
+  --bg-tertiary: #1a1f2a;
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --bg-card-soft: rgba(255, 255, 255, 0.06);
+  --bg-overlay: rgba(10, 12, 18, 0.72);
 
-  // 边框和阴影
-  --border-color: #e0e0e0;
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --text-primary: #e0e6ed;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-on-dark: #e0e6ed;
 
-  // 圆角
-  --radius-sm: 16px;
+  --border-color: rgba(255, 255, 255, 0.12);
+  --glow-accent-soft: rgba(255, 179, 71, 0.22);
+  --glow-accent-strong: rgba(255, 179, 71, 0.35);
+  --shadow-sm: 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 20px 48px rgba(0, 0, 0, 0.45);
+  --shadow-warm: 0 12px 36px rgba(255, 179, 71, 0.28);
+
+  --radius-sm: 18px;
   --radius-md: 24px;
-  --radius-lg: 40px;
+  --radius-lg: 48px;
 
-  // 间距
-  --spacing-sm: 32px;
-  --spacing-md: 48px;
+  --spacing-sm: 28px;
+  --spacing-md: 40px;
   --spacing-lg: 64px;
 
-  // 安全区域
   --safe-area-bottom: env(safe-area-inset-bottom, 34px);
-  --tab-bar-height: 160px;
+  --tab-bar-height: 168px;
 }
 
-// 通用工具类
+/* 通用入场动效（替代设计稿 motion/react） */
+@keyframes aw-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes aw-logo-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes aw-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes aw-press-pop {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.97);
+  }
+}
+
+.aw-animate-in {
+  animation: aw-fade-in-up 0.5s ease-out both;
+}
+
+.aw-animate-in-delay {
+  animation: aw-fade-in-up 0.55s ease-out 0.08s both;
+}
+
 .text-center {
   text-align: center;
 }
@@ -57,36 +121,40 @@ page {
 .bg-card {
   background: var(--bg-card);
   border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-md);
+  backdrop-filter: blur(12px);
 }
 
-// 按钮样式
 .btn-primary {
-  background: var(--text-primary);
-  color: #fff;
+  background: var(--color-accent-warm);
+  color: #151921;
   border-radius: 48px;
-  padding: 32px 96px;
-  font-size: 32px;
-  font-weight: 500;
+  padding: 30px 84px;
+  font-size: 30px;
+  font-weight: 600;
+  box-shadow: var(--shadow-warm);
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-primary:active {
-  background: #2d2d2d;
+  transform: scale(0.98);
+  opacity: 0.92;
 }
 
 .btn-secondary {
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 48px;
-  padding: 24px 48px;
-  font-size: 28px;
+  padding: 22px 46px;
+  font-size: 26px;
   cursor: pointer;
+  backdrop-filter: blur(12px);
 }
 
-// 安全区域适配
 .safe-area-bottom {
   padding-bottom: calc(var(--safe-area-bottom) + 40px);
 }

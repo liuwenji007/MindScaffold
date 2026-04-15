@@ -1,7 +1,9 @@
 .breakdown-page {
   min-height: 100vh;
   padding: 32px 32px 60px;
-  background: linear-gradient(180deg, #f5f0e8 0%, #f0e6d3 100%);
+  background:
+    radial-gradient(80% 50% at 50% -10%, var(--glow-accent-soft) 0%, transparent 68%),
+    linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 .breakdown-page-loading {
@@ -9,7 +11,7 @@
   justify-content: center;
   align-items: center;
   font-size: 28px;
-  color: #7a7a7a;
+  color: var(--text-secondary);
 }
 
 .progress-section {
@@ -19,7 +21,7 @@
 
 .progress-text {
   font-size: 24px;
-  color: #7a7a7a;
+  color: var(--text-secondary);
   text-align: center;
   display: block;
   margin-top: 12px;
@@ -32,19 +34,22 @@
 
 .emotion-tag {
   font-size: 26px;
-  color: #81b29a;
-  background: rgba(129, 178, 154, 0.15);
+  color: var(--color-accent-deep);
+  background: rgba(216, 155, 99, 0.14);
   padding: 12px 32px;
   border-radius: 32px;
+  border: 1px solid rgba(216, 155, 99, 0.28);
 }
 
 .question-section {
-  background: #fff;
-  border-radius: 24px;
+  background: var(--bg-card);
+  border-radius: 28px;
   padding: 32px;
   margin-bottom: 32px;
   min-height: 400px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
 }
 
 .nav-buttons {
@@ -65,22 +70,27 @@
 }
 
 .nav-btn-prev {
-  background: #f5f0e8;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 44px;
+  backdrop-filter: blur(12px);
 }
 
 .nav-btn-prev Text {
   font-size: 30px;
-  color: #5a5a5a;
+  color: var(--text-secondary);
 }
 
 .nav-btn-next {
-  background: #3d3d3d;
+  background: var(--color-accent-warm);
+  box-shadow: var(--shadow-warm);
+  border-radius: 44px;
 }
 
 .nav-btn-next Text {
   font-size: 30px;
-  color: #fff;
-  font-weight: 500;
+  color: #151921;
+  font-weight: 600;
 }
 
 .nav-btn-next-full {
@@ -94,6 +104,149 @@
 
 .skip-text {
   font-size: 26px;
-  color: #9a9a9a;
+  color: var(--text-tertiary);
   cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 8px;
+}
+
+.decon-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.decon-back {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.decon-back-text {
+  font-size: 44px;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.decon-progress-track {
+  flex: 1;
+}
+
+.decon-step-count {
+  font-size: 22px;
+  color: var(--text-tertiary);
+  font-family: ui-monospace, monospace;
+  min-width: 56px;
+  text-align: right;
+}
+
+.decon-question {
+  min-height: 360px;
+}
+
+.decon-q-title {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.45;
+  margin-bottom: 28px;
+  display: block;
+}
+
+.decon-slider-block {
+  padding: 24px 0;
+}
+
+.decon-slider-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.decon-meta {
+  font-size: 22px;
+  color: var(--text-secondary);
+}
+
+.decon-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.decon-option {
+  padding: 28px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card-soft);
+  text-align: center;
+}
+
+.decon-option-on {
+  border-color: rgba(255, 179, 71, 0.45);
+  background: rgba(255, 179, 71, 0.1);
+}
+
+.decon-option-text {
+  font-size: 28px;
+  color: var(--text-primary);
+}
+
+.decon-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.decon-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 22px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card-soft);
+}
+
+.decon-row-on {
+  border-color: rgba(255, 179, 71, 0.45);
+  background: rgba(255, 179, 71, 0.08);
+}
+
+.decon-row-text {
+  font-size: 28px;
+  color: var(--text-primary);
+}
+
+.decon-check {
+  font-size: 28px;
+  color: var(--color-accent-deep);
+  font-weight: 700;
+}
+
+.decon-sort-row {
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+.decon-sort-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.decon-sort-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }

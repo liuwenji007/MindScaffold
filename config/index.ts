@@ -1,3 +1,4 @@
+import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 // Taro 项目配置
 const config = {
   projectName: 'awo-shuile',
@@ -51,6 +52,9 @@ const config = {
           generateScopedName: '[name]__[local]__[hash:base64:5]'
         }
       }
+    },
+    webpackChain(chain) {
+      chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin);
     }
   }
 };

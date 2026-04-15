@@ -1,194 +1,178 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Progress } from '@tarojs/components';
+import { View, Text, Slider, Progress } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useEmotionStore } from '@/store/emotionStore';
-import { getQuestionSteps, formatAnswersAsPrompt } from '@/config/questions';
-import type { QuestionStep } from '@/config/questions';
-import QuestionSlider from '@/components/QuestionSlider';
-import QuestionSelect from '@/components/QuestionSelect';
-import QuestionSort from '@/components/QuestionSort';
+import { DESIGN_QUESTIONS } from '@/config/designFlow';
 import './index.scss';
 
 export default function Breakdown() {
-  const currentEntry = useEmotionStore(s => s.currentEntry);
-  const setBreakdown = useEmotionStore(s => s.setBreakdown);
+  const draft = useEmotionStore(s => s.draft);
+  const cancelFlow = useEmotionStore(s => s.cancelFlow);
+  const setDeconstructionAnswers = useEmotionStore(s => s.setDeconstructionAnswers);
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [questions, setQuestions] = useState<QuestionStep[]>([]);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, unknown>>({});
 
   useEffect(() => {
-    if (!currentEntry) {
+    if (!draft) {
       Taro.redirectTo({ url: '/pages/index/index' });
-      return;
     }
-    // 根据情绪类型加载问题
-    const steps = getQuestionSteps(currentEntry.emotion);
-    setQuestions(steps);
-  }, [currentEntry]);
+  }, [draft]);
 
-  const handleAnswer = (value: any) => {
-    if (!questions[currentStep]) return;
-    const questionId = questions[currentStep].id;
-    setAnswers(prev => ({ ...prev, [questionId]: value }));
-  };
-
-  const getCurrentAnswer = () => {
-    if (!questions[currentStep]) return undefined;
-    return answers[questions[currentStep].id];
-  };
-
-  const handleNext = () => {
-    if (currentStep < questions.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      handleComplete();
+  useEffect(() => {
+    if (draft?.deconstructionAnswers && Object.keys(draft.deconstructionAnswers).length > 0) {
+      setAnswers(draft.deconstructionAnswers);
     }
-  };
+  }, [draft?.deconstructionAnswers]);
 
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleComplete = () => {
-    if (!currentEntry) return;
-
-    // 将回答整理成提示词
-    const contextPrompt = formatAnswersAsPrompt(answers, currentEntry.emotion);
-
-    // 构建拆解结果
-    const breakdown = {
-      entryId: currentEntry.id,
-      causes: Object.entries(answers)
-        .filter(([key]) => key === 'attribution')
-        .flatMap(([, value]) => Array.isArray(value) ? value.map(v => ({
-          id: `cause_${v}`,
-          text: v,
-          source: 'user' as const
-        })) : []),
-      priority: answers.impact_sort || [],
-      contextPrompt // 添加到提示词
-    };
-
-    setBreakdown(breakdown);
-
-    // 跳转到镜像重述页，携带提示词
-    Taro.navigateTo({
-      url: `/pages/mirror/index?context=${encodeURIComponent(contextPrompt)}`
-    });
-  };
-
-  const renderQuestion = () => {
-    if (questions.length === 0) return null;
-
-    const question = questions[currentStep];
-    const currentAnswer = getCurrentAnswer();
-
-    switch (question.type) {
-      case 'slider':
-        return (
-          <QuestionSlider
-            question={question.question}
-            min={question.min}
-            max={question.max}
-            label={question.label}
-            value={currentAnswer as number}
-            onChange={handleAnswer}
-          />
-        );
-
-      case 'single':
-        return (
-          <QuestionSelect
-            question={question.question}
-            options={question.options || []}
-            type='single'
-            value={currentAnswer as string}
-            onChange={handleAnswer}
-          />
-        );
-
-      case 'multi':
-        return (
-          <QuestionSelect
-            question={question.question}
-            options={question.options || []}
-            type='multi'
-            value={currentAnswer as string[]}
-            onChange={handleAnswer}
-          />
-        );
-
-      case 'sort':
-        return (
-          <QuestionSort
-            question={question.question}
-            options={question.options || []}
-            value={currentAnswer as string[]}
-            onChange={handleAnswer}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  const progress = questions.length > 0 ? ((currentStep + 1) / questions.length) * 100 : 0;
-  const isLastStep = currentStep === questions.length - 1;
-
-  if (questions.length === 0) {
+  if (!draft) {
     return (
       <View className='breakdown-page-loading'>
-        <Text>阿窝正在整理今晚的小问题...</Text>
+        <Text>正在回到首页…</Text>
       </View>
     );
   }
 
+  const currentQ = DESIGN_QUESTIONS[step];
+  const progress = ((step + 1) / DESIGN_QUESTIONS.length) * 100;
+
+  const handleCancel = () => {
+    cancelFlow();
+    Taro.navigateBack();
+  };
+
+  const handleNext = () => {
+    if (step < DESIGN_QUESTIONS.length - 1) {
+      setStep(step + 1);
+    } else {
+      setDeconstructionAnswers(answers);
+      Taro.navigateTo({ url: '/pages/mirror/index' });
+    }
+  };
+
+  const setAnswer = (patch: Record<string, unknown>) => {
+    setAnswers(prev => ({ ...prev, ...patch }));
+  };
+
+  const renderBody = () => {
+    if (currentQ.type === 'slider') {
+      const v = Number(answers[currentQ.id] ?? 5);
+      return (
+        <View className='decon-slider-block'>
+          <Slider
+            min={currentQ.min}
+            max={currentQ.max}
+            step={1}
+            value={v}
+            activeColor='#ffb347'
+            backgroundColor='rgba(255,255,255,0.1)'
+            blockSize={20}
+            onChange={e => setAnswer({ [currentQ.id]: String(e.detail.value) })}
+          />
+          <View className='decon-slider-meta'>
+            <Text className='decon-meta'>{currentQ.labels[0]}</Text>
+            <Text className='decon-meta'>{currentQ.labels[1]}</Text>
+          </View>
+        </View>
+      );
+    }
+
+    if (currentQ.type === 'radio') {
+      return (
+        <View className='decon-grid'>
+          {(currentQ.options ?? []).map(opt => (
+            <View
+              key={opt}
+              className={`decon-option ${answers[currentQ.id] === opt ? 'decon-option-on' : ''}`}
+              onClick={() => setAnswer({ [currentQ.id]: opt })}
+            >
+              <Text className='decon-option-text'>{opt}</Text>
+            </View>
+          ))}
+        </View>
+      );
+    }
+
+    if (currentQ.type === 'checkbox') {
+      const cur = (answers[currentQ.id] as string[] | undefined) ?? [];
+      return (
+        <View className='decon-stack'>
+          {(currentQ.options ?? []).map(opt => {
+            const on = cur.includes(opt);
+            return (
+              <View
+                key={opt}
+                className={`decon-row ${on ? 'decon-row-on' : ''}`}
+                onClick={() => {
+                  const next = on ? cur.filter(x => x !== opt) : [...cur, opt];
+                  setAnswer({ [currentQ.id]: next });
+                }}
+              >
+                <Text className='decon-row-text'>{opt}</Text>
+                {on ? <Text className='decon-check'>✓</Text> : null}
+              </View>
+            );
+          })}
+        </View>
+      );
+    }
+
+    if (currentQ.type === 'sort') {
+      const order = (answers[currentQ.id] as string[] | undefined) ?? [];
+      return (
+        <View className='decon-stack'>
+          {(currentQ.options ?? []).map((opt, i) => {
+            const idx = order.indexOf(opt);
+            return (
+              <View
+                key={opt}
+                className={`decon-row decon-sort-row ${idx !== -1 ? 'decon-row-on' : ''}`}
+                onClick={() => {
+                  const has = order.includes(opt);
+                  const next = has ? order.filter(x => x !== opt) : [...order, opt];
+                  setAnswer({ [currentQ.id]: next });
+                }}
+              >
+                <View className='decon-sort-badge'>
+                  <Text className='decon-sort-num'>{idx !== -1 ? idx + 1 : i + 1}</Text>
+                </View>
+                <Text className='decon-row-text'>{opt}</Text>
+              </View>
+            );
+          })}
+        </View>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <View className='breakdown-page'>
-      {/* 进度条 */}
-      <View className='progress-section'>
-        <Progress
-          percent={progress}
-          strokeWidth={4}
-          activeColor='#81b29a'
-          backgroundColor='#e0e0e0'
-        />
-        <Text className='progress-text'>
-          阿窝帮你理一理：第 {currentStep + 1} / {questions.length} 步
-        </Text>
-      </View>
-
-      {/* 情绪标签 */}
-      <View className='emotion-tag-section'>
-        <Text className='emotion-tag'>今晚的感受：{currentEntry?.emotion}</Text>
-      </View>
-
-      {/* 问题区域 */}
-      <View className='question-section'>
-        {renderQuestion()}
-      </View>
-
-      {/* 导航按钮 */}
-      <View className='nav-buttons'>
-        {currentStep > 0 && (
-          <View className='nav-btn-prev' onClick={handlePrev}>
-            <Text>退回上一小步</Text>
-          </View>
-        )}
-        <View className={`nav-btn-next ${currentStep === 0 ? 'nav-btn-next-full' : ''}`} onClick={handleNext}>
-          <Text>{isLastStep ? '收好这份整理' : '继续下一小步'}</Text>
+      <View className='decon-top'>
+        <View className='decon-back' onClick={handleCancel}>
+          <Text className='decon-back-text'>‹</Text>
         </View>
+        <View className='decon-progress-track'>
+          <Progress
+            percent={progress}
+            strokeWidth={4}
+            activeColor='#ffb347'
+            backgroundColor='rgba(255,255,255,0.1)'
+          />
+        </View>
+        <Text className='decon-step-count'>{step + 1}/{DESIGN_QUESTIONS.length}</Text>
       </View>
 
-      {/* 跳过提示 */}
-      <View className='skip-section'>
-        <Text className='skip-text' onClick={() => handleComplete()}>
-          先跳过，直接去镜像重述
-        </Text>
+      <View className='question-section decon-question'>
+        <Text className='decon-q-title'>{currentQ.question}</Text>
+        {renderBody()}
+      </View>
+
+      <View className='nav-buttons'>
+        <View className='nav-btn-next nav-btn-next-full' onClick={handleNext}>
+          <Text>{step === DESIGN_QUESTIONS.length - 1 ? '完成拆解' : '下一步'}</Text>
+        </View>
       </View>
     </View>
   );

@@ -1,34 +1,33 @@
-// 运行时平台检测
-export const Platform = {
-  isH5: typeof window !== 'undefined' && !('wx' in window) && !('plus' in window),
-  isWeapp: typeof window !== 'undefined' && 'wx' in window,
-  isHybrid: typeof window !== 'undefined' && 'plus' in window,
-};
+import Taro from '@tarojs/taro';
 
-// 能力检测
-export const Capability = {
-  hasBridge: (): boolean => {
-    return typeof window !== 'undefined' && 'plus' in window;
-  },
-  hasNativeStorage: (): boolean => {
-    return typeof window !== 'undefined' && 'plus' in window;
-  },
-};
+/** 与 Taro `getEnv()` 对齐的运行时判断，集中多端分支 */
 
-// 获取安全区域
-export const getSafeArea = () => {
-  if (typeof window === 'undefined') return { top: 20, bottom: 34 };
-
-  const safeArea = {
-    top: 20,
-    bottom: 34,
-  };
-
-  // iOS 安全区域
-  if ('CSS' in window && CSS.supports && CSS.supports('padding-top: env(safe-area-inset-top)')) {
-    safeArea.top = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top') || '20', 10);
-    safeArea.bottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom') || '34', 10);
+export function getRuntimeEnv(): string {
+  try {
+    return Taro.getEnv();
+  } catch {
+    return Taro.ENV_TYPE.WEB;
   }
+}
 
-  return safeArea;
-};
+export function isWeb(): boolean {
+  return getRuntimeEnv() === Taro.ENV_TYPE.WEB;
+}
+
+export function isWeapp(): boolean {
+  return getRuntimeEnv() === Taro.ENV_TYPE.WEAPP;
+}
+
+export function isRN(): boolean {
+  return getRuntimeEnv() === Taro.ENV_TYPE.RN;
+}
+
+export function isAlipay(): boolean {
+  return getRuntimeEnv() === Taro.ENV_TYPE.ALIPAY;
+}
+
+/** H5 或 RN（非小程序容器） */
+export function isWebOrRN(): boolean {
+  const e = getRuntimeEnv();
+  return e === Taro.ENV_TYPE.WEB || e === Taro.ENV_TYPE.RN;
+}

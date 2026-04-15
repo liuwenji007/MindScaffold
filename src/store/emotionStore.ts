@@ -1,78 +1,58 @@
 import { create } from 'zustand';
-import type { EmotionEntry, ActionCard, Breakdown, MirrorResult } from '@/types/emotion';
+import type { AwEmotionCard } from '@/types/emotion';
 
 interface EmotionState {
-  // 当前流程状态
-  currentStep: 'entry' | 'breakdown' | 'mirror' | 'action';
+  draft: FlowDraft | null;
+  cards: AwEmotionCard[];
 
-  // 当前情绪记录
-  currentEntry: EmotionEntry | null;
-
-  // 当前拆解结果
-  currentBreakdown: Breakdown | null;
-
-  // 当前镜像重述
-  currentMirror: MirrorResult | null;
-
-  // 所有卡片（用于历史记录）
-  cards: ActionCard[];
-
-  // Actions
-  setStep: (step: 'entry' | 'breakdown' | 'mirror' | 'action') => void;
-  setEntry: (entry: EmotionEntry) => void;
-  setBreakdown: (breakdown: Breakdown) => void;
-  setMirror: (mirror: MirrorResult) => void;
-  addCard: (card: ActionCard) => void;
-  updateCard: (id: string, updates: Partial<ActionCard>) => void;
-  removeCard: (id: string) => void;
-  loadCards: (cards: ActionCard[]) => void;
-  reset: () => void;
+  startFlow: (intensity: number, input: string) => void;
+  cancelFlow: () => void;
+  setDeconstructionAnswers: (answers: Record<string, unknown>) => void;
+  setMirrorText: (text: string) => void;
+  addCard: (card: AwEmotionCard) => void;
+  updateCard: (id: string, updates: Partial<AwEmotionCard>) => void;
+  loadCards: (cards: AwEmotionCard[]) => void;
+  resetDraft: () => void;
 }
 
 export const useEmotionStore = create<EmotionState>((set) => ({
-  currentStep: 'entry',
-  currentEntry: null,
-  currentBreakdown: null,
-  currentMirror: null,
+  draft: null,
   cards: [],
 
-  setStep: (step) => set({ currentStep: step }),
+  startFlow: (intensity, input) =>
+    set({
+      draft: {
+        intensity,
+        input,
+        deconstructionAnswers: {}
+      }
+    }),
 
-  setEntry: (entry) => set({
-    currentEntry: entry,
-    currentStep: 'breakdown'
-  }),
+  cancelFlow: () => set({ draft: null }),
 
-  setBreakdown: (breakdown) => set({
-    currentBreakdown: breakdown,
-    currentStep: 'mirror'
-  }),
+  setDeconstructionAnswers: (answers) =>
+    set((s) =>
+      s.draft
+        ? { draft: { ...s.draft, deconstructionAnswers: answers } }
+        : {}
+    ),
 
-  setMirror: (mirror) => set({
-    currentMirror: mirror,
-    currentStep: 'action'
-  }),
+  setMirrorText: (text) =>
+    set((s) =>
+      s.draft ? { draft: { ...s.draft, mirrorText: text } } : {}
+    ),
 
-  addCard: (card) => set((state) => ({
-    cards: [...state.cards, card]
-  })),
+  addCard: (card) =>
+    set((s) => ({
+      cards: [card, ...s.cards.filter((c) => c.id !== card.id)]
+    })),
 
-  updateCard: (id, updates) => set((state) => ({
-    cards: state.cards.map(card =>
-      card.id === id ? { ...card, ...updates } : card
-    )
-  })),
-
-  removeCard: (id) => set((state) => ({
-    cards: state.cards.filter(card => card.id !== id)
-  })),
+  updateCard: (id, updates) =>
+    set((s) => ({
+      cards: s.cards.map((c) => (c.id === id ? { ...c, ...updates } : c))
+    })),
 
   loadCards: (cards) => set({ cards }),
 
-  reset: () => set({
-    currentStep: 'entry',
-    currentEntry: null,
-    currentBreakdown: null,
-    currentMirror: null
-  })
+  resetDraft: () => set({ draft: null })
 }));

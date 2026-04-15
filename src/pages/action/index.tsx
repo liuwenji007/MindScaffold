@@ -3,139 +3,98 @@ import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { v4 as uuidv4 } from 'uuid';
 import { useEmotionStore } from '@/store/emotionStore';
-import { fetchActions } from '@/services/ai';
-import { saveCard } from '@/services/storage';
-import type { ActionCard, MicroAction } from '@/types/emotion';
+import { saveAwCard } from '@/services/storage';
+import { DESIGN_ACTIONS } from '@/config/designFlow';
+import type { AwEmotionCard } from '@/types/emotion';
 import './index.scss';
 
 export default function Action() {
-  const currentEntry = useEmotionStore(s => s.currentEntry);
-  const currentMirror = useEmotionStore(s => s.currentMirror);
+  const draft = useEmotionStore(s => s.draft);
   const addCard = useEmotionStore(s => s.addCard);
-  const reset = useEmotionStore(s => s.reset);
+  const resetDraft = useEmotionStore(s => s.resetDraft);
 
-  const [actions, setActions] = useState<MicroAction[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selected, setSelected] = useState(-1);
 
   useEffect(() => {
-    if (!currentMirror) {
+    if (!draft?.mirrorText) {
       Taro.redirectTo({ url: '/pages/index/index' });
-      return;
     }
-    generateActions();
-  }, [currentMirror]);
+  }, [draft]);
 
-  const generateActions = async () => {
-    if (!currentMirror) return;
-    setIsLoading(true);
-    try {
-      const res = await fetchActions({ mirrorText: currentMirror.mirrorText });
-      const microActions: MicroAction[] = res.actions.map((a, idx) => ({
-        id: uuidv4(),
-        text: a.text,
-        estimatedTime: a.estimatedTime
-      }));
-      setActions(microActions);
-    } catch {
-      // AI 生成失败时提供默认行动
-      setActions([
-        { id: uuidv4(), text: '写下3个让你担心的事', estimatedTime: '5分钟' },
-        { id: uuidv4(), text: '深呼吸10次，感受当下的平静', estimatedTime: '3分钟' },
-        { id: uuidv4(), text: '给信任的人发一条消息', estimatedTime: '5分钟' }
-      ]);
-    }
-    setIsLoading(false);
-  };
-
-  const handleSelect = (id: string) => {
-    setSelectedId(id);
-  };
-
-  const handleConfirm = async () => {
-    if (!selectedId) {
-      Taro.showToast({ title: '先选一个今晚要做的小动作', icon: 'none' });
-      return;
-    }
-
-    const selectedAction = actions.find(a => a.id === selectedId);
-    const card: ActionCard = {
-      id: uuidv4(),
-      entryId: currentEntry!.id,
-      mirrorText: currentMirror!.mirrorText,
-      actions,
-      selectedActionId: selectedId,
-      status: 'pending',
-      createdAt: Date.now()
-    };
-
-    // 保存到 IndexedDB
-    await saveCard(card);
-
-    // 更新 store
-    addCard(card);
-
-    // 重置当前流程
-    reset();
-
-    // 提示用户
-    Taro.showToast({
-      title: `今晚就做：${selectedAction?.text}`,
-      icon: 'none',
-      duration: 3000
-    });
-
-    // 返回首页
-    setTimeout(() => {
-      Taro.redirectTo({ url: '/pages/index/index' });
-    }, 3000);
-  };
-
-  const handleSkip = () => {
-    reset();
-    Taro.redirectTo({ url: '/pages/index/index' });
-  };
-
-  if (isLoading) {
+  if (!draft?.mirrorText) {
     return (
       <View className='action-page-loading'>
-        <Text>阿窝正在找一个今晚就能做的小动作...</Text>
+        <Text>正在回到首页…</Text>
       </View>
     );
   }
 
+  const handleConfirm = async () => {
+    if (selected < 0) {
+      Taro.showToast({ title: '先选一个今晚就能做的小事', icon: 'none' });
+      return;
+    }
+    const pick = DESIGN_ACTIONS[selected];
+    const now = Date.now();
+    const card: AwEmotionCard = {
+      id: uuidv4(),
+      createdAt: now,
+      date: new Date(now).toLocaleString('zh-CN', {
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      intensity: draft.intensity,
+      input: draft.input,
+      mirrorText: draft.mirrorText,
+      action: pick.text,
+      duration: pick.duration,
+      status: 'pending',
+      deconstructionAnswers: draft.deconstructionAnswers
+    };
+
+    await saveAwCard(card);
+    addCard(card);
+    resetDraft();
+
+    Taro.showToast({ title: '已收进历史', icon: 'success', duration: 1200 });
+    setTimeout(() => {
+      Taro.switchTab({ url: '/pages/history/index' });
+    }, 800);
+  };
+
   return (
     <View className='action-page'>
-      {/* 标题 */}
       <View className='header'>
-        <Text className='title'>睡前最后一件事</Text>
-        <Text className='subtitle'>不用解决全部，只做一个现在就能完成的小动作</Text>
+        <Text className='title'>一个微小的行动</Text>
+        <Text className='subtitle'>选择一个今晚就能完成的小事，给今天画个句号</Text>
       </View>
 
-      {/* 行动选项 */}
       <View className='action-list'>
-        {actions.map(action => (
+        {DESIGN_ACTIONS.map((action, i) => (
           <View
-            key={action.id}
-            className={`action-card ${selectedId === action.id ? 'action-card-selected' : ''}`}
-            onClick={() => handleSelect(action.id)}
+            key={action.text}
+            className={`action-card ${selected === i ? 'action-card-selected' : ''}`}
+            onClick={() => setSelected(i)}
           >
-            <Text className='action-text'>{action.text}</Text>
-            <Text className='action-time'>{action.estimatedTime}</Text>
+            <View className={`action-radio ${selected === i ? 'action-radio-on' : ''}`}>
+              {selected === i ? <Text className='action-radio-mark'>✓</Text> : null}
+            </View>
+            <View className='action-copy'>
+              <Text className='action-text'>{action.text}</Text>
+              <Text className='action-time'>⏱ {action.duration}</Text>
+            </View>
           </View>
         ))}
       </View>
 
-      {/* AI 标识 */}
-      <Text className='ai-tag'>阿窝生成内容，仅供参考</Text>
-
-      {/* 操作按钮 */}
-      <View className='action-area'>
-        <View className='skip-btn' onClick={handleSkip}>
-          <Text>今晚先不做</Text>
-        </View>
-        <View className='confirm-btn' onClick={handleConfirm}>
-          <Text>就做这个</Text>
+      <View className='action-area action-area-single'>
+        <View
+          className={`confirm-btn ${selected < 0 ? 'confirm-btn-disabled' : ''}`}
+          onClick={handleConfirm}
+        >
+          <Text>确认并完成梳理</Text>
         </View>
       </View>
     </View>
