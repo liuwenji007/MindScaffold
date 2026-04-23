@@ -39,7 +39,7 @@
 .treeSubTitle {
   display: block;
   margin-top: 10px;
-  font-size: 26px;
+  font-size: 28px;
   color: var(--text-secondary);
   line-height: 1.55;
 }
@@ -51,25 +51,31 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 18px 12px;
+  margin-bottom: 48px;
+  gap: 24px;
 }
 
 .treeStatItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  gap: 4px;
+}
+
+.treeStatTop {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
 .treeStatValue {
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1;
 }
 
 .treeStatValueAccent {
@@ -81,15 +87,16 @@
 }
 
 .treeStatLabel {
-  margin-top: 6px;
   font-size: 20px;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .treeStatDivider {
   width: 1px;
-  height: 54px;
-  background: rgba(255, 255, 255, 0.16);
+  height: 48px;
+  background: rgba(255, 255, 255, 0.10);
 }
 
 .treeBody {
@@ -103,11 +110,11 @@
 .treeSection {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .treeSectionTitle {
-  font-size: 22px;
+  font-size: 24px;
   color: rgba(148, 163, 184, 0.92);
   letter-spacing: 1px;
 }
@@ -145,25 +152,20 @@
 .treeLeafCard {
   width: 86%;
   border-radius: 28px;
-  padding: 18px;
+  padding: 40px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  position: relative;
+  overflow: hidden;
 }
 
 .treeLeafCardLeft {
-  border-radius: 6px 40px 6px 40px;
+  border-radius: 8px 80px 8px 80px;
 }
 
 .treeLeafCardRight {
-  border-radius: 40px 6px 40px 6px;
-}
-
-.treeLeafCardExpired {
-  opacity: 0.74;
-  width: auto;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.06);
+  border-radius: 80px 8px 80px 8px;
 }
 
 .treeLeafCardTop {
@@ -171,45 +173,60 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 24px;
 }
 
 .treeLeafCardMeta {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 
 .treeLeafCardDate {
   font-size: 20px;
   color: rgba(148, 163, 184, 0.9);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.treeLeafCardTimeRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .treeLeafCardTime {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--color-accent-warm);
-  font-weight: 600;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .treeLeafSunBtn {
-  padding: 8px 12px;
-  border-radius: 16px;
-  background: rgba(255, 179, 71, 0.16);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: rgba(255, 179, 71, 0.12);
 }
 
 .treeLeafSunBtnText {
-  font-size: 20px;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--color-accent-warm);
 }
 
 .treeLeafStory {
-  margin-top: 12px;
-  font-size: 24px;
-  line-height: 1.62;
+  font-size: 28px;
+  line-height: 1.65;
   color: var(--text-primary);
+  font-style: italic;
 }
 
 .treeLeafBottom {
-  margin-top: 10px;
+  margin-top: 24px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -218,8 +235,9 @@
 }
 
 .treeLeafBottomHint {
-  font-size: 18px;
+  font-size: 20px;
   color: rgba(255, 179, 71, 0.65);
+  font-weight: 500;
 }
 
 .treeLeafBottomArrow {
@@ -227,42 +245,172 @@
   color: rgba(255, 179, 71, 0.65);
 }
 
+.treeBookmarkSection {
+  padding-top: 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.treeBookmarkHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.treeBookmarkHeaderText {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.8);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.treeBookmarkRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 32px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.treeBookmarkLeft {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 28px;
+  flex: 1;
+  min-width: 0;
+}
+
+.treeBookmarkIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: 36px;
+  background: rgba(148, 163, 184, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.treeBookmarkMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.treeBookmarkDate {
+  font-size: 20px;
+  color: rgba(148, 163, 184, 0.8);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.treeBookmarkStory {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.treeBookmarkRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
+.treeBookmarkSun {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.treeBookmarkSunNum {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 179, 71, 0.7);
+}
+
 .treeEmpty {
-  border-radius: 24px;
-  border: 1px dashed rgba(255, 255, 255, 0.24);
-  padding: 28px 20px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 80px 20px;
 }
 
 .treeEmptyMain {
-  font-size: 26px;
-  color: rgba(148, 163, 184, 0.92);
+  font-size: 28px;
+  color: rgba(148, 163, 184, 0.6);
+  font-style: italic;
 }
 
 .treeDetailMask {
   position: fixed;
   inset: 0;
   z-index: 220;
-  background: rgba(10, 12, 18, 0.86);
+  background: rgba(15, 17, 22, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 48px;
 }
 
 .treeDetailPanel {
-  width: auto;
-  border-radius: 28px;
-  padding: 24px;
-  background: #151921;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  width: 100%;
+  max-width: 680px;
+  box-sizing: border-box;
+  border-radius: 60px;
+  padding: 64px 56px 56px;
+  background: #2c2c31;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 48px 96px rgba(0, 0, 0, 0.55);
+}
+
+.treeDetailPanelEven {
+  border-radius: 16px 104px 16px 104px;
+}
+
+.treeDetailPanelOdd {
+  border-radius: 104px 16px 104px 16px;
+}
+
+.treeDetailWatermark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.085;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 320'%3E%3Cpath d='M100 292 V200 M100 200 Q58 168 32 128 M100 200 Q142 168 168 128 M100 162 Q68 128 40 88 M100 162 Q132 128 160 88 M100 122 Q86 82 100 36 Q114 82 100 122' fill='none' stroke='%239a8a78' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 50% 42%;
+  background-size: 72% auto;
 }
 
 .treeDetailTop {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  margin-bottom: 56px;
+  position: relative;
+  z-index: 1;
 }
 
 .treeDetailTopLeft {
@@ -271,77 +419,153 @@
 }
 
 .treeDetailClose {
-  width: 44px;
-  height: 44px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.08);
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.treeDetailCloseText {
-  font-size: 28px;
-  line-height: 1;
-  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
 }
 
 .treeDetailDate {
   display: block;
-  font-size: 20px;
-  color: rgba(148, 163, 184, 0.9);
+  font-size: 24px;
+  color: #94a3b8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .treeDetailTitle {
   display: block;
-  margin-top: 8px;
-  font-size: 34px;
-  color: var(--text-primary);
+  margin-top: 12px;
+  font-size: 44px;
+  color: #ffb84d;
   font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.treeDetailSection {
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.treeDetailLabelRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.treeDetailSectionLabel {
+  display: block;
+  font-size: 24px;
+  color: rgba(122, 138, 164, 0.95);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .treeDetailStory {
-  margin-top: 16px;
-  font-size: 24px;
-  line-height: 1.65;
-  color: var(--text-primary);
+  margin-top: 24px;
+  font-size: 32px;
+  line-height: 1.75;
+  color: #f1f5f9;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.treeDetailFeedbackCard {
+  margin-top: 56px;
+  border-radius: 44px;
+  padding: 44px 40px;
+  background: rgba(255, 184, 77, 0.06);
+  border: 1px solid rgba(200, 130, 72, 0.42);
+  position: relative;
+  z-index: 1;
+}
+
+.treeDetailFeedbackLabel {
+  display: block;
+  font-size: 22px;
+  color: rgba(255, 184, 77, 0.88);
+  letter-spacing: 0.1em;
+  font-weight: 700;
 }
 
 .treeDetailFeedback {
-  margin-top: 14px;
-  font-size: 21px;
-  line-height: 1.6;
-  color: var(--text-secondary);
+  margin-top: 24px;
+  font-size: 28px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 400;
 }
 
 .treeDetailFoot {
-  margin-top: 14px;
+  margin-top: 56px;
+  padding-top: 36px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
 }
 
-.treeDetailLikes {
-  font-size: 22px;
-  color: var(--color-accent-warm);
+.treeDetailFootStats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 36px;
+  min-width: 0;
+  flex: 1;
+}
+
+.treeDetailStatSun {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.treeDetailStatClock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.treeDetailLikesNum {
+  font-size: 28px;
+  color: #ffb84d;
+  font-weight: 700;
 }
 
 .treeDetailRemain {
-  font-size: 22px;
-  color: var(--text-secondary);
+  font-size: 24px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.02em;
 }
 
 .treeDetailAction {
-  margin-top: 14px;
+  flex-shrink: 0;
   border-radius: 999px;
-  padding: 12px 0;
+  padding: 20px 44px;
   text-align: center;
-  background: rgba(255, 179, 71, 0.18);
-  border: 1px solid rgba(255, 179, 71, 0.36);
+  background: #ffb84d;
+  border: 1px solid rgba(255, 200, 120, 0.95);
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 12px 40px rgba(255, 184, 77, 0.42);
 }
 
 .treeDetailActionText {
-  font-size: 21px;
-  font-weight: 600;
-  color: var(--color-accent-warm);
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1e;
 }

@@ -60,7 +60,21 @@ export function HistoryDetailPanel(props: HistoryDetailPanelProps) {
             </View>
           </View>
           {card.chatHistory && card.chatHistory.length > 0 ? (
-            <Text className='historyChatHint'>当前已记录 {card.chatHistory.length} 条对话</Text>
+            <View className='historyChatPreviewList'>
+              {card.chatHistory.slice(-2).map((item, idx) => (
+                <View
+                  key={`${item.role}-${idx}`}
+                  className={item.role === 'user' ? 'historyChatPreviewItem historyChatPreviewItemUser' : 'historyChatPreviewItem historyChatPreviewItemAi'}
+                >
+                  <Text className={item.role === 'user' ? 'historyChatPreviewTextUser' : 'historyChatPreviewTextAi'}>
+                    {item.content}
+                  </Text>
+                </View>
+              ))}
+              {card.chatHistory.length > 2 ? (
+                <Text className='historyChatHint'>点击“继续聊聊”查看完整对话</Text>
+              ) : null}
+            </View>
           ) : (
             <Text className='historyChatHint'>还没有开始对话</Text>
           )}

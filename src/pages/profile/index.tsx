@@ -34,10 +34,10 @@ export default function Profile() {
     <View className='profile-page'>
       <View className='profile-header'>
         <View className='profile-settings-btn' onClick={() => Taro.navigateTo({ url: '/pages/settings/index' })}>
-          <AppIcon name='settings' size={18} color='#94a3b8' />
+          <AppIcon name='settings' size={20} color='#94a3b8' />
         </View>
         <View className='profile-avatar-wrap'>
-          <AppIcon name='user' size={52} color='#94a3b8' />
+          <AppIcon name='user' size={56} color='#94a3b8' />
         </View>
         <Text className='profile-me-title'>阿窝的旅伴</Text>
         <Text className='profile-me-sub'>已陪伴你度过 {nightCount} 个夜晚</Text>

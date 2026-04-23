@@ -287,8 +287,42 @@
 
 .historyChatHint {
   margin-top: 10px;
-  font-size: 22px;
+  font-size: 24px;
   color: rgba(148, 163, 184, 0.95);
+}
+
+.historyChatPreviewList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.historyChatPreviewItem {
+  border-radius: 18px;
+  padding: 10px 12px;
+}
+
+.historyChatPreviewItemUser {
+  margin-left: 46px;
+  background: rgba(255, 179, 71, 0.12);
+}
+
+.historyChatPreviewItemAi {
+  margin-right: 46px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.historyChatPreviewTextUser {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--color-accent-warm);
+}
+
+.historyChatPreviewTextAi {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 
 .historyActionBox {
@@ -470,6 +504,15 @@
   color: rgba(148, 163, 184, 0.9);
 }
 
+.ritual-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 179, 71, 0.9);
+  animation: ritual-particle-rise 2.6s ease-in-out infinite;
+}
+
 @keyframes ritual-float-up {
   0% {
     transform: translateY(0);
@@ -477,6 +520,20 @@
   }
   100% {
     transform: translateY(-120px);
+    opacity: 0;
+  }
+}
+
+@keyframes ritual-particle-rise {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-220px) scale(0.2);
     opacity: 0;
   }
 }

@@ -148,6 +148,17 @@ export default function History() {
             <Text className='ritual-h3'>它已经放下了</Text>
             <Text className='ritual-p'>今晚，你可以安心睡个好觉了</Text>
           </View>
+          {Array.from({ length: 10 }).map((_, idx) => (
+            <View
+              key={`particle-${idx}`}
+              className='ritual-particle'
+              style={{
+                left: `${10 + idx * 8}%`,
+                bottom: `${10 + (idx % 3) * 8}%`,
+                animationDelay: `${idx * 0.12}s`
+              }}
+            />
+          ))}
         </View>
       ) : null}
 

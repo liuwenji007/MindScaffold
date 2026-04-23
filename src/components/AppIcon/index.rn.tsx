@@ -6,12 +6,14 @@ import {
   ArrowRight,
   Check,
   ChevronLeft,
+  Clock,
   Leaf,
   History,
   Home,
   Settings,
   ShoppingBag,
   Sparkles,
+  Sun,
   User,
   Wind
 } from 'lucide-react-native';
@@ -28,7 +30,9 @@ const MAP = {
   check: Check,
   wind: Wind,
   arrowRight: ArrowRight,
-  sparkles: Sparkles
+  sparkles: Sparkles,
+  sun: Sun,
+  clock: Clock
 } as const;
 
 export function AppIcon({ name, size = 24, color = '#e0e6ed', className }: AppIconProps) {

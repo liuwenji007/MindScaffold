@@ -9,7 +9,9 @@ export type AppIconName =
   | 'check'
   | 'wind'
   | 'arrowRight'
-  | 'sparkles';
+  | 'sparkles'
+  | 'sun'
+  | 'clock';
 
 export type AppIconProps = {
   name: AppIconName;

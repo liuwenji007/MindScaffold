@@ -249,3 +249,40 @@ export function IconSparkles({ size = 20, color = 'currentColor', className }: I
     </svg>
   );
 }
+
+export function IconSun({ size = 22, color = 'currentColor', className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <circle cx='12' cy='12' r='4' fill={color} />
+      <path
+        d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41'
+        stroke={color}
+        strokeWidth='2'
+        strokeLinecap='round'
+      />
+    </svg>
+  );
+}
+
+export function IconClock({ size = 22, color = 'currentColor', className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <circle cx='12' cy='12' r='10' stroke={color} strokeWidth='2' />
+      <path d='M12 6v6l4 2' stroke={color} strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' />
+    </svg>
+  );
+}

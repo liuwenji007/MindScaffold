@@ -7,12 +7,14 @@ import {
   IconArrowRight,
   IconCheck,
   IconChevronLeft,
+  IconClock,
   IconHistory,
   IconHome,
   IconLeaf,
   IconSettings,
   IconShop,
   IconSparkles,
+  IconSun,
   IconUser,
   IconWind
 } from '@/components/icons/LucideLike';
@@ -29,7 +31,9 @@ const MAP = {
   check: IconCheck,
   wind: IconWind,
   arrowRight: IconArrowRight,
-  sparkles: IconSparkles
+  sparkles: IconSparkles,
+  sun: IconSun,
+  clock: IconClock
 } as const;
 
 export function AppIcon({ name, size, color = 'currentColor', className }: AppIconProps) {
