@@ -5,6 +5,7 @@ import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
 import type { AwEmotionCard } from '@/types/emotion';
 import TabBar from '@/components/TabBar';
+import { isHarmonyHybrid, isRN } from '@/platform/runtime';
 import { LeafItem } from './components/LeafItem';
 import './index.scss';
 
@@ -22,6 +23,7 @@ export default function TreePage() {
   const setActiveTab = useEmotionStore(s => s.setActiveTab);
   const [selected, setSelected] = useState<AwEmotionCard | null>(null);
   const [now, setNow] = useState(Date.now());
+  const isCompactMode = isRN() || isHarmonyHybrid();
 
   React.useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -51,8 +53,21 @@ export default function TreePage() {
     await updateAwCard(card.id, next);
   };
 
+  const handleFertilizeFromDetail = async () => {
+    if (!selected || (selected.expiryTime ?? 0) <= now) return;
+    const next = {
+      ...selected,
+      likes: (selected.likes ?? 0) + 1,
+      expiryTime: (selected.expiryTime ?? now) + 15 * 60 * 1000
+    };
+    setSelected(next);
+    updateCard(selected.id, next);
+    await updateAwCard(selected.id, next);
+  };
+
   return (
-    <View className='treePage'>
+    <View className={isCompactMode ? 'treePage treePageCompact' : 'treePage'}>
+      <View className='treeBackdrop' />
       <View className='treeHeader'>
         <Text className='treeTitle'>生命之树</Text>
         <Text className='treeSubTitle'>每一片叶子，都是一段被温柔对待的时光</Text>
@@ -68,6 +83,11 @@ export default function TreePage() {
           <Text className='treeStatValue'>{bookmarks.length}</Text>
           <Text className='treeStatLabel'>书签归档</Text>
         </View>
+        <View className='treeStatDivider' />
+        <View className='treeStatItem'>
+          <Text className='treeStatValue treeStatValueBlue'>{bookmarks.length * 12 + 42}</Text>
+          <Text className='treeStatLabel'>同路旅伴</Text>
+        </View>
       </View>
 
       <View className='treeBody'>
@@ -80,10 +100,11 @@ export default function TreePage() {
         {activeLeaves.length > 0 ? (
           <View className='treeSection'>
             <Text className='treeSectionTitle'>枝头叶片</Text>
-            {activeLeaves.map(card => (
+            {activeLeaves.map((card, index) => (
               <LeafItem
                 key={card.id}
                 card={card}
+                align={index % 2 === 0 ? 'left' : 'right'}
                 timeLabel={formatRemain((card.expiryTime ?? 0) - now)}
                 onOpen={setSelected}
                 onFertilize={handleFertilize}
@@ -105,10 +126,17 @@ export default function TreePage() {
       {selected ? (
         <View className='treeDetailMask' onClick={() => setSelected(null)}>
           <View className='treeDetailPanel' onClick={event => event.stopPropagation()}>
-            <Text className='treeDetailDate'>{selected.date}</Text>
-            <Text className='treeDetailTitle'>
-              {(selected.expiryTime ?? 0) > now ? '叶子的记忆' : '永恒的书签'}
-            </Text>
+            <View className='treeDetailTop'>
+              <View className='treeDetailTopLeft'>
+                <Text className='treeDetailDate'>{selected.date}</Text>
+                <Text className='treeDetailTitle'>
+                  {(selected.expiryTime ?? 0) > now ? '叶子的记忆' : '永恒的书签'}
+                </Text>
+              </View>
+              <View className='treeDetailClose' onClick={() => setSelected(null)}>
+                <Text className='treeDetailCloseText'>×</Text>
+              </View>
+            </View>
             <Text className='treeDetailStory'>「{selected.story || selected.mirrorText}」</Text>
             {selected.feedback ? <Text className='treeDetailFeedback'>{selected.feedback}</Text> : null}
             <View className='treeDetailFoot'>
@@ -117,6 +145,11 @@ export default function TreePage() {
                 <Text className='treeDetailRemain'>{formatRemain((selected.expiryTime ?? 0) - now)}</Text>
               ) : null}
             </View>
+            {(selected.expiryTime ?? 0) > now ? (
+              <View className='treeDetailAction' onClick={() => void handleFertilizeFromDetail()}>
+                <Text className='treeDetailActionText'>照耀阳光</Text>
+              </View>
+            ) : null}
           </View>
         </View>
       ) : null}

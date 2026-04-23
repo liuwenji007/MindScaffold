@@ -41,6 +41,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+  const [scrollAnchor, setScrollAnchor] = useState('chat-anchor-top');
 
   const persistMessages = async (next: ChatMessage[]) => {
     if (historyChatCardId) {
@@ -57,6 +58,7 @@ export default function ChatPage() {
     const userMessage: ChatMessage = { role: 'user', content };
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
+    setScrollAnchor('chat-anchor-bottom');
     setInput('');
     setTyping(true);
     await persistMessages(nextMessages);
@@ -69,6 +71,7 @@ export default function ChatPage() {
       const merged = [...nextMessages, aiMessage];
       setMessages(merged);
       setTyping(false);
+      setScrollAnchor('chat-anchor-bottom');
       await persistMessages(merged);
     }, TYPING_DELAY_MS);
   };
@@ -96,8 +99,9 @@ export default function ChatPage() {
         </View>
       </View>
 
-      <ScrollView className='chat-scroll' scrollY scrollWithAnimation>
+      <ScrollView className='chat-scroll' scrollY scrollWithAnimation scrollIntoView={scrollAnchor}>
         <View className='chat-list'>
+          <View id='chat-anchor-top' />
           {messages.map((item, index) => (
             <View
               key={`${item.role}-${index}`}
@@ -112,11 +116,14 @@ export default function ChatPage() {
           ))}
           {typing ? (
             <View className='chat-row-ai'>
-              <View className='chat-bubble-ai'>
-                <Text className='chat-bubble-ai-text'>阿窝正在思考...</Text>
+              <View className='chat-bubble-ai chat-bubble-ai-typing'>
+                <View className='chat-typing-dot chat-typing-dot-one' />
+                <View className='chat-typing-dot chat-typing-dot-two' />
+                <View className='chat-typing-dot chat-typing-dot-three' />
               </View>
             </View>
           ) : null}
+          <View id='chat-anchor-bottom' />
         </View>
       </ScrollView>
 

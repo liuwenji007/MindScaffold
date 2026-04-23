@@ -31,7 +31,7 @@
 }
 
 .chat-header-title {
-  font-size: 28px;
+  font-size: 30px;
   color: var(--text-primary);
   font-weight: 600;
 }
@@ -43,7 +43,7 @@
 }
 
 .chat-finish-btn-text {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--color-accent-warm);
 }
 
@@ -53,10 +53,10 @@
 }
 
 .chat-list {
-  padding: 24px 24px 10px;
+  padding: 26px 24px 12px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .chat-row-user {
@@ -87,15 +87,42 @@
 }
 
 .chat-bubble-user-text {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1.6;
   color: #151921;
 }
 
 .chat-bubble-ai-text {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1.6;
   color: var(--text-primary);
+}
+
+.chat-bubble-ai-typing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-typing-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(224, 230, 237, 0.8);
+  animation: chatTypingPulse 1s ease-in-out infinite;
+}
+
+.chat-typing-dot-one {
+  animation-delay: 0s;
+}
+
+.chat-typing-dot-two {
+  animation-delay: 0.2s;
+}
+
+.chat-typing-dot-three {
+  animation-delay: 0.4s;
 }
 
 .chat-input-wrap {
@@ -117,12 +144,12 @@
   background: var(--bg-card);
   padding: 0 28px;
   color: var(--text-primary);
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .chat-input-placeholder {
   color: rgba(148, 163, 184, 0.55);
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .chat-send-btn {
@@ -137,4 +164,17 @@
 
 .chat-send-btn-disabled {
   opacity: 0.45;
+}
+
+@keyframes chatTypingPulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
