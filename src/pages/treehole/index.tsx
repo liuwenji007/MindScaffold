@@ -5,11 +5,11 @@ import './index.scss';
 
 /**
  * 树洞仪式已合并到「历史」详情中的「放进树洞」。
- * 保留路由以便旧链接跳转，进入后自动回到历史页。
+ * 保留路由以便旧链接跳转，进入后自动回到生命之树页。
  */
 export default function Treehole() {
   useEffect(() => {
-    Taro.redirectTo({ url: '/pages/history/index' });
+    Taro.redirectTo({ url: '/pages/tree/index' });
   }, []);
 
   return (

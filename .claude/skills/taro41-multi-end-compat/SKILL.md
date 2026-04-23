@@ -41,6 +41,11 @@ Use this skill to implement and troubleshoot one-codebase multi-end behavior for
 - Provide fallback for every native/hybrid call path.
 - Keep timeout/retry policy consistent across platforms.
 - Treat `references/rn-ui-hard-rules.md` as mandatory when writing RN-facing page code or styles.
+- Do not use CSS/SCSS nested selectors in business pages/components. Keep selectors flat and explicit.
+- Split oversized pages/components proactively:
+  - Container/page layer handles route, data orchestration, and flow transitions.
+  - Presentational layer handles pure UI and interaction callbacks.
+  - Extract heavy blocks (list items, modal panels, cards) into separate components to reduce re-render scope.
 
 ## Recommended Structure
 
@@ -63,6 +68,8 @@ Use this skill to implement and troubleshoot one-codebase multi-end behavior for
 - Confirm fallback path works when bridge is unavailable.
 - Confirm UI key pages render without layout break.
 - Confirm route transitions and back behavior are consistent.
+- Confirm newly added style files contain no nested selectors.
+- Confirm complex pages are split into maintainable components and no obvious interaction jank is introduced.
 
 ---
 
@@ -131,6 +138,27 @@ Apply these rules as hard constraints for Taro 3.x / 4.x (pre-Taro 5) code targe
 - Replace these patterns with `position: absolute` in RN-compatible implementation and adjust parent layout accordingly.
 - Reserve explicit space in normal flow (placeholder or container padding/margin) to avoid overlap when converting sticky/fixed blocks.
 - Keep z-index layering explicit for absolute-positioned headers, footers, or floating actions.
+
+## 10) Nested Selector Ban
+
+- Do not use nested selectors in `.scss` / `.css` for cross-end pages and components.
+- Avoid patterns such as:
+  - `.card { .title {} }`
+  - `.card { &-title {} }`
+  - `.a { .b { .c {} } }`
+- Use flat explicit selectors instead, such as:
+  - `.card`
+  - `.card-title`
+  - `.card-title-active`
+
+## 11) Page and Component Split Rule
+
+- For pages with multiple states, modal layers, large lists, or mixed concerns, split by responsibility:
+  - Page container: state machine, data loading, platform branching.
+  - Feature sections: independent blocks (header, filters, list, detail panel).
+  - Reusable atoms: button/card/badge/loading.
+- Prefer splitting before adding platform-specific branches inside a huge single file.
+- Keep style classes aligned with split boundaries to improve readability and debug speed.
 
 ## 参考: platform-compat-checklist.md
 

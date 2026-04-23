@@ -34,7 +34,7 @@ export default function Mirror() {
 
   const handleConfirm = () => {
     setMirrorText(text);
-    Taro.navigateTo({ url: '/pages/action/index' });
+    Taro.navigateTo({ url: '/pages/chat/index' });
   };
 
   const handleRegenerate = () => {

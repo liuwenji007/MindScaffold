@@ -1,0 +1,65 @@
+.settingsPage {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 34px 24px 40px;
+  background: linear-gradient(180deg, #0f1218 0%, #151921 60%, #1a1f2a 100%);
+}
+
+.settingsTitle {
+  display: block;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+}
+
+.settingsSection {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settingsItem {
+  border-radius: 20px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settingsItemText {
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+.settingsItemArrow {
+  font-size: 26px;
+  color: var(--text-secondary);
+}
+
+.settingsItemDanger {
+  border-radius: 20px;
+  padding: 16px;
+  background: rgba(224, 122, 95, 0.08);
+  border: 1px solid rgba(224, 122, 95, 0.3);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settingsItemDangerText {
+  font-size: 24px;
+  color: #ff9f89;
+}

@@ -11,8 +11,13 @@ const PLACEHOLDER_STYLE = 'color:rgba(148,163,184,0.45);font-size:26px;';
 
 export default function Index() {
   const startFlow = useEmotionStore(s => s.startFlow);
+  const setActiveTab = useEmotionStore(s => s.setActiveTab);
   const [intensity, setIntensity] = useState(5);
   const [input, setInput] = useState('');
+
+  Taro.useDidShow(() => {
+    setActiveTab('home');
+  });
 
   const handleStart = () => {
     startFlow(intensity, input.trim());
@@ -74,12 +79,6 @@ export default function Index() {
           <AppIcon name='arrowRight' size={20} color='#151921' />
         </View>
       </FadeIn>
-
-      <View className='footer'>
-        <Text className='disclaimer'>
-          本产品不替代专业心理咨询或治疗
-        </Text>
-      </View>
 
       <TabBar current='index' />
     </View>

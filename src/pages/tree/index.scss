@@ -1,0 +1,213 @@
+.treePage {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 34px 24px 150px;
+  background: linear-gradient(180deg, #0f1218 0%, #151921 60%, #1a1f2a 100%);
+}
+
+.treeHeader {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.treeTitle {
+  display: block;
+  font-size: 40px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.treeSubTitle {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+  color: var(--text-secondary);
+}
+
+.treeStats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  border-radius: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 14px 12px;
+}
+
+.treeStatItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.treeStatValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.treeStatValueAccent {
+  color: var(--color-accent-warm);
+}
+
+.treeStatLabel {
+  margin-top: 4px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.treeStatDivider {
+  width: 1px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.treeBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.treeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.treeSectionTitle {
+  font-size: 20px;
+  color: rgba(148, 163, 184, 0.9);
+  letter-spacing: 1px;
+}
+
+.treeLeafCard {
+  border-radius: 24px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+
+.treeLeafCardExpired {
+  opacity: 0.75;
+}
+
+.treeLeafCardTop {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.treeLeafCardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.treeLeafCardDate {
+  font-size: 19px;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+.treeLeafCardTime {
+  font-size: 20px;
+  color: var(--color-accent-warm);
+  font-weight: 600;
+}
+
+.treeLeafSunBtn {
+  padding: 6px 10px;
+  border-radius: 14px;
+  background: rgba(255, 179, 71, 0.14);
+}
+
+.treeLeafSunBtnText {
+  font-size: 18px;
+  color: var(--color-accent-warm);
+}
+
+.treeLeafStory {
+  margin-top: 10px;
+  font-size: 23px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.treeEmpty {
+  border-radius: 24px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  padding: 24px;
+  text-align: center;
+}
+
+.treeEmptyMain {
+  font-size: 24px;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.treeDetailMask {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  background: rgba(10, 12, 18, 0.86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.treeDetailPanel {
+  width: auto;
+  border-radius: 24px;
+  padding: 22px;
+  background: #151921;
+  border: 1px solid var(--border-color);
+}
+
+.treeDetailDate {
+  display: block;
+  font-size: 19px;
+  color: rgba(148, 163, 184, 0.86);
+}
+
+.treeDetailTitle {
+  display: block;
+  margin-top: 6px;
+  font-size: 30px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.treeDetailStory {
+  margin-top: 14px;
+  font-size: 23px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.treeDetailFeedback {
+  margin-top: 12px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.treeDetailFoot {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.treeDetailLikes {
+  font-size: 21px;
+  color: var(--color-accent-warm);
+}
+
+.treeDetailRemain {
+  font-size: 21px;
+  color: var(--text-secondary);
+}

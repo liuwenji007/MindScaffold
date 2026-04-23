@@ -31,3 +31,47 @@ export function isWebOrRN(): boolean {
   const e = getRuntimeEnv();
   return e === Taro.ENV_TYPE.WEB || e === Taro.ENV_TYPE.RN;
 }
+
+export interface RuntimeCapabilities {
+  hasBridge: boolean;
+  hasNativeStorageSync: boolean;
+  hasNativeShare: boolean;
+  hasNativeUpload: boolean;
+}
+
+type MaybeBridgeWindow = {
+  ArkWeb?: unknown;
+  harmony?: unknown;
+  JSBridge?: unknown;
+  HarmonyBridge?: unknown;
+  webkit?: {
+    messageHandlers?: unknown;
+  };
+};
+
+function getWindowAny(): Record<string, unknown> | null {
+  try {
+    if (typeof window === 'undefined') return null;
+    return window as unknown as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+export function isHarmonyHybrid(): boolean {
+  if (!isWeb()) return false;
+  const win = getWindowAny() as MaybeBridgeWindow | null;
+  if (!win) return false;
+  return Boolean(win.ArkWeb || win.harmony || win.HarmonyBridge || win.webkit?.messageHandlers);
+}
+
+export function getRuntimeCapabilities(): RuntimeCapabilities {
+  const win = getWindowAny() as MaybeBridgeWindow | null;
+  const hasBridge = Boolean(win?.webkit?.messageHandlers || win?.JSBridge || win?.HarmonyBridge);
+  return {
+    hasBridge,
+    hasNativeStorageSync: hasBridge || isWeapp() || isRN(),
+    hasNativeShare: hasBridge || isWeapp() || isRN(),
+    hasNativeUpload: hasBridge || isWeapp() || isRN()
+  };
+}

@@ -11,6 +11,8 @@ import './index.scss';
 export default function Action() {
   const draft = useEmotionStore(s => s.draft);
   const addCard = useEmotionStore(s => s.addCard);
+  const gainEmotionPoints = useEmotionStore(s => s.gainEmotionPoints);
+  const setActiveTab = useEmotionStore(s => s.setActiveTab);
   const resetDraft = useEmotionStore(s => s.resetDraft);
 
   const [selected, setSelected] = useState(-1);
@@ -38,8 +40,8 @@ export default function Action() {
     const now = Date.now();
     const card: AwEmotionCard = {
       id: uuidv4(),
-      createdAt: now,
-      date: new Date(now).toLocaleString('zh-CN', {
+      createdAt: draft.createdAt || now,
+      date: draft.date || new Date(now).toLocaleString('zh-CN', {
         month: 'numeric',
         day: 'numeric',
         hour: '2-digit',
@@ -47,15 +49,18 @@ export default function Action() {
       }),
       intensity: draft.intensity,
       input: draft.input,
-      mirrorText: draft.mirrorText,
+      mirrorText: draft.mirrorText || '',
       action: pick.text,
       duration: pick.duration,
       status: 'pending',
-      deconstructionAnswers: draft.deconstructionAnswers
+      deconstructionAnswers: draft.deconstructionAnswers,
+      chatHistory: draft.chatHistory ?? []
     };
 
     await saveAwCard(card);
     addCard(card);
+    gainEmotionPoints(10);
+    setActiveTab('history');
     resetDraft();
 
     Taro.showToast({ title: '已收进历史', icon: 'success', duration: 1200 });

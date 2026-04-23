@@ -5,18 +5,27 @@ import { useEmotionStore } from '@/store/emotionStore';
 import { getAllAwCards, clearAllData, updateAwCard } from '@/services/storage';
 import type { AwEmotionCard } from '@/types/emotion';
 import TabBar from '@/components/TabBar';
+import { HistoryFilter, type FilterKey } from './components/HistoryFilter';
+import { HistoryCardItem } from './components/HistoryCardItem';
+import { HistoryDetailPanel } from './components/HistoryDetailPanel';
 import './index.scss';
-
-type FilterKey = 'all' | 'pending' | 'completed';
 
 export default function History() {
   const cards = useEmotionStore(s => s.cards);
   const loadCards = useEmotionStore(s => s.loadCards);
   const updateCard = useEmotionStore(s => s.updateCard);
+  const setActiveTab = useEmotionStore(s => s.setActiveTab);
+  const setHistoryChatCardId = useEmotionStore(s => s.setHistoryChatCardId);
 
   const [filter, setFilter] = useState<FilterKey>('all');
   const [selectedCard, setSelectedCard] = useState<AwEmotionCard | null>(null);
   const [showRitual, setShowRitual] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+  const [feedback, setFeedback] = useState('');
+
+  Taro.useDidShow(() => {
+    setActiveTab('history');
+  });
 
   useEffect(() => {
     void refresh();
@@ -30,6 +39,9 @@ export default function History() {
   const handleMarkDone = async (card: AwEmotionCard) => {
     await updateAwCard(card.id, { status: 'completed' });
     updateCard(card.id, { status: 'completed' });
+    if (selectedCard?.id === card.id) {
+      setSelectedCard({ ...card, status: 'completed' });
+    }
     await refresh();
     Taro.showToast({ title: '很好，今晚这一步你已经做到了。', icon: 'none' });
   };
@@ -43,6 +55,24 @@ export default function History() {
       setShowRitual(false);
       setSelectedCard(null);
     }, 3000);
+  };
+
+  const handleShareLeaf = async () => {
+    if (!selectedCard) return;
+    const nextCard: AwEmotionCard = {
+      ...selectedCard,
+      isLeaf: true,
+      feedback,
+      likes: selectedCard.likes ?? 0,
+      expiryTime: Date.now() + 24 * 60 * 60 * 1000,
+      story: `在${selectedCard.date}，有一颗种子在心中萌发。面对“${selectedCard.input || '难以言说的情绪'}”，TA选择了“${selectedCard.action}”。最终，这份情绪化作了一片轻盈的叶子。`
+    };
+    await updateAwCard(nextCard.id, nextCard);
+    updateCard(nextCard.id, nextCard);
+    setSelectedCard(nextCard);
+    setShowShare(false);
+    setFeedback('');
+    Taro.showToast({ title: '已挂上生命之树', icon: 'success' });
   };
 
   const handleDeleteAll = () => {
@@ -68,21 +98,7 @@ export default function History() {
     <View className='history-page'>
       <View className='history-header-row'>
         <Text className='history-title-inline'>情绪存档</Text>
-        <View className='filter-wrap filter-wrap-inline'>
-          <View className='filter-list'>
-            {(['all', 'pending', 'completed'] as const).map(f => (
-              <View
-                key={f}
-                className={`filter-item ${filter === f ? 'filter-item-active' : ''}`}
-                onClick={() => setFilter(f)}
-              >
-                <Text className={`filter-text ${filter === f ? 'filter-text-active' : ''}`}>
-                  {f === 'all' ? '全部' : f === 'pending' ? '待办' : '已成'}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
+        <HistoryFilter value={filter} onChange={setFilter} />
       </View>
 
       <Text className='subtitle history-sub'>你放下过的每一步，都在这里安静留存</Text>
@@ -95,95 +111,31 @@ export default function History() {
       ) : (
         <View className='card-list'>
           {filteredCards.map(card => (
-            <View
-              key={card.id}
-              className={`history-card ${card.status === 'completed' ? 'history-card-done' : ''} ${card.status === 'letgo' ? 'history-card-letgo' : ''}`}
-              onClick={() => setSelectedCard(card)}
-            >
-              <View className='card-header'>
-                <View className='card-header-left'>
-                  <Text className='card-date'>{card.date}</Text>
-                  <View className='card-meta-row'>
-                    <Text className='card-intensity'>情绪值 {card.intensity}</Text>
-                    {card.status === 'completed' ? (
-                      <Text className='card-pill-done'>已完成</Text>
-                    ) : null}
-                  </View>
-                </View>
-                {card.status === 'pending' ? (
-                  <View
-                    className='card-quick-done'
-                    onClick={e => {
-                      e.stopPropagation();
-                      void handleMarkDone(card);
-                    }}
-                  >
-                    <Text className='card-quick-done-text'>✓</Text>
-                  </View>
-                ) : null}
-              </View>
-              <Text className='card-mirror'>「{card.mirrorText}」</Text>
-              <View className='card-action-row'>
-                <Text className='card-action-label'>微行动：{card.action}</Text>
-                <Text className='card-chevron'>›</Text>
-              </View>
-            </View>
+            <HistoryCardItem key={card.id} card={card} onOpen={setSelectedCard} onComplete={handleMarkDone} />
           ))}
         </View>
       )}
 
       {selectedCard ? (
-        <View className='detail-modal'>
-          <View className='detail-modal-inner'>
-            <View className='detail-back' onClick={() => setSelectedCard(null)}>
-              <Text className='detail-back-text'>‹</Text>
-            </View>
-
-            <Text className='detail-date'>{selectedCard.date}</Text>
-            <Text className='detail-h1'>情绪回顾</Text>
-
-            <View className='detail-section'>
-              <Text className='detail-k'>当时的心情</Text>
-              <Text className='detail-body italic'>
-                「{selectedCard.input || '没有留下文字描述'}」
-              </Text>
-            </View>
-
-            <View className='detail-section'>
-              <Text className='detail-k'>AI 镜像重述</Text>
-              <View className='detail-quote-box'>
-                <Text className='detail-body'>{selectedCard.mirrorText}</Text>
-              </View>
-            </View>
-
-            <View className='detail-section'>
-              <Text className='detail-k'>预定的微行动</Text>
-              <View className='detail-action-box'>
-                <Text className='detail-action-title'>{selectedCard.action}</Text>
-                <Text className='detail-action-sub'>预计时长：{selectedCard.duration}</Text>
-              </View>
-            </View>
-
-            <View className='detail-footer-btns'>
-              {selectedCard.status === 'pending' ? (
-                <View
-                  className='modal-btn'
-                  onClick={() => void handleMarkDone(selectedCard)}
-                >
-                  <Text>标记完成</Text>
-                </View>
-              ) : null}
-              {selectedCard.status !== 'letgo' ? (
-                <View
-                  className='modal-btn modal-btn-tree'
-                  onClick={() => runLetGoRitual(selectedCard)}
-                >
-                  <Text>放进树洞</Text>
-                </View>
-              ) : null}
-            </View>
-          </View>
-        </View>
+        <HistoryDetailPanel
+          card={selectedCard}
+          feedback={feedback}
+          sharing={showShare}
+          onFeedbackChange={setFeedback}
+          onClose={() => {
+            setSelectedCard(null);
+            setShowShare(false);
+          }}
+          onComplete={() => void handleMarkDone(selectedCard)}
+          onLetGo={() => runLetGoRitual(selectedCard)}
+          onShareLeaf={() => void handleShareLeaf()}
+          onContinueChat={() => {
+            setHistoryChatCardId(selectedCard.id);
+            Taro.navigateTo({ url: '/pages/chat/index' });
+          }}
+          onOpenShare={() => setShowShare(true)}
+          onCloseShare={() => setShowShare(false)}
+        />
       ) : null}
 
       {showRitual ? (
@@ -202,7 +154,7 @@ export default function History() {
       {filteredCards.length > 0 ? (
         <View className='clear-area'>
           <View className='clear-btn' onClick={handleDeleteAll}>
-            <Text>清空阿窝记录</Text>
+            <Text className='clear-btn-text'>清空阿窝记录</Text>
           </View>
         </View>
       ) : null}

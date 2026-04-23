@@ -4,8 +4,13 @@
 import React from 'react';
 import {
   ArrowRight,
+  Check,
+  ChevronLeft,
+  Leaf,
   History,
   Home,
+  Settings,
+  ShoppingBag,
   Sparkles,
   User,
   Wind
@@ -15,7 +20,12 @@ import type { AppIconProps } from './types';
 const MAP = {
   home: Home,
   history: History,
+  leaf: Leaf,
   user: User,
+  settings: Settings,
+  shop: ShoppingBag,
+  chevronLeft: ChevronLeft,
+  check: Check,
   wind: Wind,
   arrowRight: ArrowRight,
   sparkles: Sparkles
@@ -23,7 +33,8 @@ const MAP = {
 
 export function AppIcon({ name, size = 24, color = '#e0e6ed', className }: AppIconProps) {
   const Cmp = MAP[name];
-  return <Cmp size={size} color={color} className={className} />;
+  void className;
+  return <Cmp size={size} color={color} />;
 }
 
 export type { AppIconName, AppIconProps } from './types';

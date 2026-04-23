@@ -5,8 +5,13 @@
 import React from 'react';
 import {
   IconArrowRight,
+  IconCheck,
+  IconChevronLeft,
   IconHistory,
   IconHome,
+  IconLeaf,
+  IconSettings,
+  IconShop,
   IconSparkles,
   IconUser,
   IconWind
@@ -16,7 +21,12 @@ import type { AppIconProps } from './types';
 const MAP = {
   home: IconHome,
   history: IconHistory,
+  leaf: IconLeaf,
   user: IconUser,
+  settings: IconSettings,
+  shop: IconShop,
+  chevronLeft: IconChevronLeft,
+  check: IconCheck,
   wind: IconWind,
   arrowRight: IconArrowRight,
   sparkles: IconSparkles

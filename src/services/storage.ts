@@ -59,6 +59,15 @@ function mapLegacyToAw(card: LegacyActionCard): AwEmotionCard {
   };
 }
 
+function normalizeAwCard(card: AwEmotionCard): AwEmotionCard {
+  return {
+    ...card,
+    likes: card.likes ?? 0,
+    isLeaf: card.isLeaf ?? false,
+    chatHistory: card.chatHistory ?? []
+  };
+}
+
 async function getAllLegacyCardKeys(): Promise<string[]> {
   const allKeys = await keys();
   return allKeys.map(String).filter(k => isLegacyCardKey(k) && !isV2CardKey(k));
@@ -101,11 +110,13 @@ export async function migrateLegacyCardsToV2(): Promise<void> {
 }
 
 export async function saveAwCard(card: AwEmotionCard): Promise<void> {
-  await set(v2CardKey(card.id), card);
+  await set(v2CardKey(card.id), normalizeAwCard(card));
 }
 
 export async function getAwCard(id: string): Promise<AwEmotionCard | undefined> {
-  return get<AwEmotionCard>(v2CardKey(id));
+  const card = await get<AwEmotionCard>(v2CardKey(id));
+  if (!card) return undefined;
+  return normalizeAwCard(card);
 }
 
 export async function getAllAwCards(): Promise<AwEmotionCard[]> {
@@ -114,7 +125,7 @@ export async function getAllAwCards(): Promise<AwEmotionCard[]> {
   const allKeys = await keys();
   const v2Keys = allKeys.map(String).filter(isV2CardKey);
   const rows = await Promise.all(v2Keys.map(k => get<AwEmotionCard>(k)));
-  const cards = rows.filter(Boolean) as AwEmotionCard[];
+  const cards = (rows.filter(Boolean) as AwEmotionCard[]).map(normalizeAwCard);
   const map = new Map<string, AwEmotionCard>();
   cards.forEach(c => map.set(c.id, c));
   return Array.from(map.values()).sort((a, b) => b.createdAt - a.createdAt);
@@ -122,11 +133,11 @@ export async function getAllAwCards(): Promise<AwEmotionCard[]> {
 
 export async function updateAwCard(
   id: string,
-  updates: Partial<Pick<AwEmotionCard, 'status'>> & Partial<AwEmotionCard>
+  updates: Partial<AwEmotionCard>
 ): Promise<void> {
   const card = await getAwCard(id);
   if (!card) return;
-  await saveAwCard({ ...card, ...updates });
+  await saveAwCard(normalizeAwCard({ ...card, ...updates }));
 }
 
 export async function deleteAwCard(id: string): Promise<void> {

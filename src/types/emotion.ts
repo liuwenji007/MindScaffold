@@ -21,6 +21,13 @@ export interface EmotionBlock {
 /** 历史卡片状态：与设计稿 EmotionCard.status 一致 */
 export type AwCardStatus = 'pending' | 'completed' | 'letgo';
 
+export type AwMainTab = 'home' | 'history' | 'tree' | 'me';
+
+export interface ChatMessage {
+  role: 'user' | 'ai';
+  content: string;
+}
+
 /** 设计稿中的情绪存档卡片 */
 export interface AwEmotionCard {
   id: string;
@@ -33,14 +40,24 @@ export interface AwEmotionCard {
   action: string;
   duration: string;
   status: AwCardStatus;
+  emotion?: string;
+  story?: string;
+  feedback?: string;
+  isLeaf?: boolean;
+  expiryTime?: number;
+  likes?: number;
+  chatHistory?: ChatMessage[];
   /** 拆解步骤答案，可选持久化 */
   deconstructionAnswers?: Record<string, unknown>;
 }
 
 /** 当前一次梳理流程中的草稿（未落库） */
 export interface FlowDraft {
+  createdAt: number;
+  date: string;
   intensity: number;
   input: string;
   deconstructionAnswers: Record<string, unknown>;
   mirrorText?: string;
+  chatHistory?: ChatMessage[];
 }

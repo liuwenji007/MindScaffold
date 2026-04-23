@@ -10,6 +10,7 @@ const MUTED = '#94a3b8';
 const TABS = [
   { key: 'index', title: '首页', icon: 'home' as const, path: '/pages/index/index' },
   { key: 'history', title: '历史', icon: 'history' as const, path: '/pages/history/index' },
+  { key: 'tree', title: '大树', icon: 'leaf' as const, path: '/pages/tree/index' },
   { key: 'profile', title: '我的', icon: 'user' as const, path: '/pages/profile/index' }
 ];
 
