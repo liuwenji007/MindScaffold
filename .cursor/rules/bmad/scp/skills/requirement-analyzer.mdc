@@ -1,0 +1,59 @@
+---
+description: BMAD SCP Workflow: requirement-analyzer
+globs: 
+alwaysApply: false
+---
+
+# Requirement Analyzer
+
+## 工作流程
+
+1. **获取需求输入** — 从飞书 PRD、手动输入或文件读取；按来源选择处理方式。详见 [references/input-sources.md](references/input-sources.md)。
+2. **需求结构化分析** — 按五维度分析：业务场景、功能点、交互流程、数据模型、技术实现。详见 [references/analysis-framework.md](references/analysis-framework.md)。
+3. **生成分析文档** — 输出结构化需求分析文档（见下方输出结构）。
+4. **生成 Todolist** — 按功能模块/优先级/开发阶段组织，任务含动作动词+对象+可选验收标准，标注依赖。详见 [references/todolist-template.md](references/todolist-template.md)。
+
+## 分析原则
+
+- **结构化**：使用统一框架，不遗漏关键维度。
+- **完整性**：挖掘细节，识别边界与异常。
+- **可执行**：分析文档与 todolist 清晰、具体、可执行。
+- **可追溯**：保持需求来源与结果的关联。
+
+## 处理规则
+
+- **删除线内容**：需求文档中带删除线的文字视为已删除功能，不纳入开发计划与 todolist；仅在分析文档末尾以「已删除/已下线需求」单独备注。
+- **B/C 端与范围**：结合需求原型图片判断当前页面为 B 端或 C 端，仅规划本项目内需要开发的内容，不规划非本项目范围的功能。
+- **模块与路径**：从需求清单中提取模块与子模块，与项目中的模块名称、代码路径对应；在项目内查找匹配的模块与路径。若找不到且无法判断是否为新增需求，须与用户确认后再写入分析文档与 todolist。
+
+## 输出格式
+
+### 需求分析文档结构
+
+```markdown
+# 需求分析文档：[功能名称]
+
+## 1. 需求概述
+## 2. 业务场景分析
+## 3. 功能点拆解
+## 4. 交互流程梳理
+## 5. 数据模型分析
+## 6. 技术实现评估
+```
+
+### Todolist
+
+按需求选择组织方式（功能模块/优先级/开发阶段），任务写法与依赖标注见 [references/todolist-template.md](references/todolist-template.md)。
+
+## 工具依赖
+
+- **Feishu MCP**：飞书 PRD 输入时读取文档。
+- **文件读取**：本地 .md / .txt / .docx 需求文件。
+
+## References
+
+| 文件 | 用途 |
+|------|------|
+| [input-sources.md](references/input-sources.md) | 飞书 PRD、手动输入、文件输入的处理与解析 |
+| [analysis-framework.md](references/analysis-framework.md) | 五维度分析框架与各维度要点 |
+| [todolist-template.md](references/todolist-template.md) | Todolist 组织方式、任务规范、粒度与依赖标注 |

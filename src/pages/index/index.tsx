@@ -7,7 +7,7 @@ import { AppIcon } from '@/components/AppIcon';
 import { FadeIn } from '@/components/motion';
 import './index.scss';
 
-const PLACEHOLDER_STYLE = 'color:rgba(148,163,184,0.45);font-size:26px;';
+const PLACEHOLDER_STYLE = 'color:rgba(148,163,184,0.4);font-size:14px;';
 
 export default function Index() {
   const startFlow = useEmotionStore(s => s.startFlow);
@@ -31,11 +31,11 @@ export default function Index() {
           <View className='home-logo-wrap'>
             <View className='home-logo-glow' />
             <View className='home-logo-icon'>
-              <AppIcon name='wind' size={34} color='#151921' />
+              <AppIcon name='wind' size={32} color='#151921' />
             </View>
           </View>
           <Text className='title'>阿窝睡了</Text>
-          <Text className='subtitle'>「把你的今天，放进软窝里」</Text>
+          <Text className='subtitle'>"把你的今天，放进软窝里"</Text>
         </View>
       </FadeIn>
 
@@ -76,7 +76,7 @@ export default function Index() {
       <FadeIn variant='fadeInDelay'>
         <View className='home-primary' onClick={handleStart}>
           <Text className='home-primary-text'>开始梳理</Text>
-          <AppIcon name='arrowRight' size={20} color='#151921' />
+          <AppIcon name='arrowRight' size={18} color='#151921' />
         </View>
       </FadeIn>
 

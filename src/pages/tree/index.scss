@@ -21,6 +21,17 @@
     radial-gradient(42% 26% at 88% 56%, rgba(255, 179, 71, 0.07) 0%, transparent 76%);
 }
 
+.treeSvgBg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800'%3E%3Cpath d='M200,800 C180,600 220,400 200,100' stroke='%23ffb347' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Cpath d='M205,650 Q300,600 360,550' stroke='%23ffb347' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M195,550 Q100,500 40,450' stroke='%23ffb347' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M202,450 Q280,350 340,300' stroke='%23ffb347' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M198,350 Q120,250 60,200' stroke='%23ffb347' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M200,250 Q250,150 300,100' stroke='%23ffb347' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='203' cy='100' r='3' fill='%23ffb347'/%3E%3Ccircle cx='199' cy='200' r='3' fill='%23ffb347'/%3E%3Ccircle cx='200' cy='300' r='3' fill='%23ffb347'/%3E%3Ccircle cx='202' cy='400' r='3' fill='%23ffb347'/%3E%3Ccircle cx='195' cy='500' r='3' fill='%23ffb347'/%3E%3Ccircle cx='205' cy='600' r='3' fill='%23ffb347'/%3E%3Ccircle cx='200' cy='700' r='3' fill='%23ffb347'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+}
+
 .treeHeader {
   position: relative;
   z-index: 1;

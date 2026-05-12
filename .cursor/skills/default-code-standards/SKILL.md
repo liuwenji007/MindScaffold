@@ -1,0 +1,247 @@
+---
+name: default-code-standards
+description: 默认代码规范配置工具。提供公司模板项目的标准代码规范配置，包括代码风格、命名规范、组织规范等，支持不同项目类型（H5、Web 等）。适用于：工作流中需要应用默认代码规范的场景、用户没有模板项目时的代码规范配置场景、需要统一代码风格的代码生成场景。
+---
+
+# Default Code Standards
+
+默认代码规范配置工具，提供公司模板项目的标准代码规范，用于指导代码生成和确保代码风格一致性。
+
+## 工作流程
+
+使用默认代码规范遵循以下步骤（智能缓存机制）：
+
+1. **检查用户偏好文件** - 优先检查是否存在已保存的用户偏好文件
+2. **自动分析当前项目** - 如果没有偏好文件，使用 template-analyzer 分析当前根目录项目
+3. **保存分析结果** - 将分析结果保存为用户偏好，供下次直接使用（节省 token）
+4. **选择预设规范** - 如果分析失败或用户选择，使用预设代码规范（H5/Web/OSMP Web）
+5. **应用规范** - 将规范配置应用到代码生成或项目配置中
+6. **验证规范** - 确保生成的代码符合规范要求
+
+## 快速开始
+
+### 1. 检查用户偏好文件（优先）
+
+**检查路径：**
+- `{project-root}/_bmad/_cfg/user-preferences.yaml`
+
+**如果存在：**
+- 直接读取用户偏好文件中的代码规范配置
+- 使用已保存的技术栈、代码风格、命名规范等
+- **优势：** 节省 token，提高效率，无需重复分析
+
+**如果不存在：**
+- 继续执行步骤 2（自动分析当前项目）
+
+### 2. 自动分析当前项目（智能发现）
+
+**当没有用户偏好文件时：**
+- 使用 `template-analyzer` skill 分析当前根目录下的项目
+- 分析项目结构、技术栈、代码规范等
+- 提取关键信息并整理成结构化格式
+
+**分析内容：**
+- 项目结构模式（MVC、模块化、功能导向等）
+- 技术栈识别（框架、UI 库、状态管理、构建工具等）
+- 代码规范提取（缩进、引号、命名规范等）
+- 代码要点提取（架构模式、最佳实践等）
+
+**分析后：**
+- 将分析结果保存到用户偏好文件
+- 供下次直接使用，避免重复分析
+
+**如果分析失败：**
+- 继续执行步骤 3（使用预设规范）
+
+### 3. 选择预设规范配置（备选方案）
+
+**当没有偏好文件且分析失败时，或用户明确选择时：**
+
+根据项目类型选择对应的预设代码规范：
+
+**H5 项目：**
+- 参考 [references/h5-standards.md](references/h5-standards.md)
+- 包含 H5 项目特定的代码规范配置
+
+**Web 项目：**
+- 参考 [references/web-standards.md](references/web-standards.md)
+- 包含 Web 项目特定的代码规范配置
+
+**OSMP Web 项目（默认模板）：**
+- 参考 [references/saas-admin-standards.md](references/saas-admin-standards.md)
+- 基于 osmp-web 项目的完整代码规范配置
+
+### 4. 应用规范配置
+
+将选定的规范配置应用到代码生成：
+
+**方式 1：直接使用规范配置**
+- 读取对应项目类型的规范配置
+- 应用到代码生成流程中
+- 确保生成的代码符合规范
+
+**方式 2：保存到用户偏好文件**
+- 将规范配置保存到 `{project-root}/_bmad/_cfg/user-preferences.yaml`
+- 供后续代码生成使用
+- 格式参考 [references/standards-format.md](references/standards-format.md)
+
+### 5. 验证规范应用
+
+确保规范正确应用：
+
+- 检查生成的代码是否符合规范
+- 验证代码风格、命名规范等
+- 确认项目结构符合组织规范
+
+## 项目类型支持
+
+### H5 项目
+
+H5 项目的代码规范配置，包含：
+
+- **技术栈**：Vue 3 + TypeScript + Vite
+- **代码风格**：2 空格缩进、单引号、无分号
+- **命名规范**：camelCase 变量、PascalCase 组件、kebab-case 文件
+- **项目结构**：功能模块化组织
+- **UI 组件库**：Vant 或 Ant Design Mobile
+
+详细配置见 [references/h5-standards.md](references/h5-standards.md)。
+
+### Web 项目
+
+Web 项目的代码规范配置，包含：
+
+- **技术栈**：React + TypeScript + Vite
+- **代码风格**：2 空格缩进、单引号、无分号
+- **命名规范**：camelCase 变量、PascalCase 组件、kebab-case 文件
+- **项目结构**：功能模块化组织
+- **UI 组件库**：Ant Design 或 Element Plus
+
+详细配置见 [references/web-standards.md](references/web-standards.md)。
+
+### OSMP Web 项目（默认模板）
+
+基于 osmp-web 项目的标准代码规范配置：
+
+- **项目地址**：`https://gitlab.starcharge.com/associated-business-center/osmp-web`
+- **项目类型**：Web 管理后台（运营管理平台）
+- **技术栈**：React 18 + TypeScript + Ant Design + Redux Toolkit + Vite
+- **使用场景**：作为默认模板项目，当用户没有提供模板时直接使用此预设规范
+
+详细配置见 [references/saas-admin-standards.md](references/saas-admin-standards.md)。
+
+### 其他项目类型
+
+其他项目类型的规范配置将在后续版本中添加：
+
+- 小程序项目
+- 后端项目
+- 全栈项目
+
+## 使用示例
+
+### 示例 1：智能缓存机制（推荐流程）
+
+**场景：** 在 `step-04-code-standards.md` 工作流中，用户没有提供模板项目。
+
+**处理流程：**
+1. **检查用户偏好文件** - 检查 `{project-root}/_bmad/_cfg/user-preferences.yaml` 是否存在
+2. **如果存在** - 直接读取已保存的代码规范配置，立即使用（节省 token）
+3. **如果不存在** - 使用 `template-analyzer` skill 分析当前根目录项目：
+   - 读取项目文件（package.json、tsconfig.json、.eslintrc 等）
+   - 分析技术栈（React + TypeScript + Ant Design）
+   - 提取代码规范（2 空格缩进、单引号、camelCase 等）
+   - 识别项目结构（功能模块化组织）
+4. **保存分析结果** - 将分析结果保存到用户偏好文件
+5. **应用规范** - 在代码生成中应用这些规范
+6. **下次使用** - 下次直接读取偏好文件，无需重复分析
+
+**优势：**
+- ✅ 首次分析后，后续直接读取（节省 token）
+- ✅ 自动发现项目规范（无需手动配置）
+- ✅ 提高效率（减少重复分析）
+
+### 示例 2：使用预设规范（备选方案）
+
+**场景：** 当前项目分析失败，或用户明确选择使用预设规范。
+
+**处理流程：**
+1. 用户选择项目类型（H5 或 Web）
+2. 加载对应的预设代码规范配置：
+   - H5 项目：`references/h5-standards.md`
+   - Web 项目：`references/web-standards.md`
+3. 将配置保存到用户偏好文件
+4. 在代码生成中应用这些规范
+
+### 示例 3：使用默认模板项目规范
+
+**场景：** 在工作流中，用户明确选择使用公司默认模板项目规范（osmp-web）。
+
+**处理流程：**
+1. 识别需要使用默认模板项目规范
+2. 直接加载 `references/saas-admin-standards.md` 中的完整配置（基于 osmp-web 项目）
+3. 将配置应用到代码生成：
+   - 使用 React 18 + TypeScript
+   - 使用 Ant Design 组件库
+   - 使用 Redux Toolkit 状态管理
+   - 遵循功能模块化项目结构
+4. 保存配置到用户偏好文件供后续使用
+
+## 规范配置结构
+
+代码规范配置采用 YAML 格式，包含以下部分：
+
+- **tech_stack**：技术栈配置
+- **code_standards**：代码规范配置
+  - **style**：代码风格（缩进、引号、分号等）
+  - **naming**：命名规范（变量、函数、文件等）
+  - **organization**：组织规范（导入顺序、文件结构等）
+- **project_structure**：项目结构配置
+- **code_patterns**：代码模式配置
+
+详细格式说明见 [references/standards-format.md](references/standards-format.md)。
+
+## 最佳实践
+
+1. **优先使用缓存**：优先检查用户偏好文件，避免重复分析（节省 token）
+2. **自动发现规范**：利用 template-analyzer 自动分析当前项目，提取真实规范
+3. **保存分析结果**：分析后及时保存到用户偏好文件，供后续使用
+4. **项目类型识别**：准确识别项目类型，选择对应的规范配置
+5. **规范一致性**：确保整个项目使用统一的代码规范
+6. **规范更新**：项目结构变化时，重新分析以更新配置
+7. **规范验证**：代码生成后，验证是否符合规范要求
+8. **规范文档**：保持规范文档的更新，便于团队参考
+
+## 工具依赖
+
+- **template-analyzer skill**：用于分析当前根目录项目（当没有用户偏好文件时）
+- **文件读取工具**：用于读取用户偏好文件和项目文件
+
+## 扩展性
+
+### 添加新的项目类型
+
+要添加新的项目类型规范：
+
+1. 在 `references/` 目录下创建新的规范文件（如 `miniprogram-standards.md`）
+2. 按照现有格式编写规范配置
+3. 在 SKILL.md 中添加项目类型说明
+4. 更新规范格式文档（如需要）
+
+### 更新现有规范
+
+更新现有项目类型的规范：
+
+1. 修改对应的规范文件（`h5-standards.md` 或 `web-standards.md`）
+2. 更新 SKILL.md 中的相关说明
+3. 确保格式符合 `standards-format.md` 的要求
+
+## Resources
+
+### references/
+
+- **h5-standards.md** - H5 项目代码规范配置，包含完整的技术栈、代码风格、命名规范等
+- **web-standards.md** - Web 项目代码规范配置，包含完整的技术栈、代码风格、命名规范等
+- **saas-admin-standards.md** - OSMP Web 项目代码规范配置（默认模板），基于 osmp-web 项目，包含完整的技术栈、代码风格、命名规范、项目结构等，可直接使用
+- **standards-format.md** - 代码规范配置格式说明，包含 YAML 结构定义和字段说明
+

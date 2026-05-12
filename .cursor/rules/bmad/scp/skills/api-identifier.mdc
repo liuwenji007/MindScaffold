@@ -1,0 +1,229 @@
+---
+description: BMAD SCP Workflow: api-identifier
+globs: 
+alwaysApply: false
+---
+
+# API Identifier
+
+API 接口识别与查询工具，帮助从需求描述中自动识别接口并查询详细信息。
+
+## 工作流程
+
+接口识别与查询遵循以下步骤：
+
+1. **需求分析** - 解析传入的需求内容，提取关键信息
+2. **接口识别** - 从需求中识别需要的接口名（可能多个）
+3. **接口查询** - 使用 Apifox MCP 查询接口详细信息
+4. **信息整理** - 将查询结果整理成结构化格式
+5. **结果返回** - 返回给调用方（工作流或其他工具）
+
+## 快速开始
+
+### 1. 接收需求输入
+
+接收来自工作流或其他工具的输入内容：
+
+- **需求描述**：功能说明、业务需求等文本
+- **功能模块**：明确的功能模块名称（可选）
+- **上下文信息**：相关的业务背景（可选）
+
+### 2. 识别接口名
+
+从需求中识别需要的接口名：
+
+**识别策略：**
+- 提取动作词（查询、创建、更新、删除等）
+- 提取实体词（用户、订单、商品等）
+- 组合生成候选接口名
+- 识别关联接口（CRUD 完整链路）
+
+详细识别方法见 [references/interface-identification.md](references/interface-identification.md)。
+
+**注意：** 实际项目可能使用非标准命名（下划线、驼峰混合、路径中包含操作动词等），参考 [references/naming-patterns.md](references/naming-patterns.md) 了解常见命名模式。
+
+**输出：**
+- 接口名列表（可能包含多个）
+- 每个接口的识别依据
+- 接口之间的关联关系
+
+### 3. 查询接口信息
+
+使用 Apifox MCP 查询接口详细信息：
+
+**查询步骤：**
+1. 读取项目的 OpenAPI Spec
+2. 在 Spec 中搜索匹配的接口
+3. 提取接口的完整信息（路径、方法、参数、响应等）
+4. 处理 $ref 引用（如有）
+
+**Apifox MCP 工具：**
+- `mcp_apifox_read_project_oas_{project_id}` - 读取 OpenAPI Spec
+- `mcp_apifox_read_project_oas_ref_resources_{project_id}` - 读取 $ref 引用
+- `mcp_apifox_refresh_project_oas_{project_id}` - 刷新 Spec
+
+详细使用指南见 [references/apifox-mcp-usage.md](references/apifox-mcp-usage.md)。
+
+### 4. 整理接口信息
+
+将查询到的接口信息整理成结构化格式：
+
+**整理内容：**
+- 接口基本信息（路径、方法、描述）
+- 请求信息（参数、请求体）
+- 响应信息（成功响应、错误响应）
+- 关联接口（CRUD 相关接口）
+
+**输出格式：**
+- Markdown 格式（便于阅读）
+- JSON 格式（便于程序处理）
+
+详细格式规范见 [references/interface-formatting.md](references/interface-formatting.md)。
+
+**注意：** 
+- 本项目使用业务状态码（S00000 表示成功，E00001-E00016 表示各种错误），而非 HTTP 状态码。参考 [references/business-status-codes.md](references/business-status-codes.md) 了解完整的业务状态码定义。
+- 分页参数命名可能不同，常见的有 `page` + `pageSize` 或 `page` + `pagecount` 等组合。参考 [references/pagination-patterns.md](references/pagination-patterns.md) 了解分页参数的常见命名模式。
+
+### 5. 返回结果
+
+将整理好的接口信息返回给调用方：
+
+**返回内容：**
+- 识别的接口列表
+- 每个接口的详细信息
+- 接口统计信息（总数、按方法分组、按标签分组）
+- 识别来源和依据
+
+## 使用示例
+
+### 示例 1：从需求描述识别接口
+
+**输入：**
+```
+需要实现用户管理功能，包括：
+1. 用户列表（支持分页和搜索）
+2. 创建新用户
+3. 编辑用户信息
+4. 删除用户
+```
+
+**处理流程：**
+1. 识别接口名：
+   - 用户列表 → `GET /api/users`
+   - 创建用户 → `POST /api/users`
+   - 编辑用户 → `PUT /api/users/{id}`
+   - 删除用户 → `DELETE /api/users/{id}`
+   - 用户详情 → `GET /api/users/{id}` (关联接口)
+
+2. 使用 Apifox MCP 查询每个接口的详细信息
+
+3. 整理并返回结构化的接口信息
+
+### 示例 2：从功能模块识别接口
+
+**输入：**
+```
+功能模块：订单管理
+需要实现订单的创建、查询和状态更新
+```
+
+**处理流程：**
+1. 识别接口名：
+   - 订单列表 → `GET /api/orders`
+   - 订单详情 → `GET /api/orders/{id}`
+   - 创建订单 → `POST /api/orders`
+   - 更新订单状态 → `PATCH /api/orders/{id}/status`
+
+2. 查询接口信息并整理返回
+
+## 错误处理
+
+### 接口未找到
+
+**情况：** 在 Apifox 中未找到匹配的接口
+
+**处理：**
+- 返回部分匹配的结果（如有）
+- 提供建议的接口名（基于命名规范）
+- 记录未找到的接口，便于后续处理
+
+### MCP 连接失败
+
+**情况：** Apifox MCP server 连接失败
+
+**处理：**
+- 提示检查 MCP 配置
+- 返回已识别的接口名列表（即使无法查询详情）
+- 建议手动验证接口
+
+### 接口信息不完整
+
+**情况：** 查询到的接口信息缺少部分字段
+
+**处理：**
+- 返回可用的信息
+- 标注缺失的字段
+- 建议补充接口文档
+
+## 输出格式
+
+### Markdown 格式
+
+适用于人类阅读和文档生成：
+
+```markdown
+# 识别的接口列表
+
+## 接口 1：{接口名称}
+[详细信息...]
+
+## 接口 2：{接口名称}
+[详细信息...]
+
+## 统计信息
+- 总数：{数量}
+- 按方法分组：{统计}
+- 按标签分组：{统计}
+```
+
+### JSON 格式
+
+适用于程序处理和集成：
+
+```json
+{
+  "interfaces": [...],
+  "summary": {...},
+  "source": {...}
+}
+```
+
+详细格式规范见 [references/interface-formatting.md](references/interface-formatting.md)。
+
+**注意：** 
+- 本项目使用业务状态码（S00000 表示成功，E00001-E00016 表示各种错误），而非 HTTP 状态码。参考 [references/business-status-codes.md](references/business-status-codes.md) 了解完整的业务状态码定义。
+- 分页参数命名可能不同，常见的有 `page` + `pageSize` 或 `page` + `pagecount` 等组合。参考 [references/pagination-patterns.md](references/pagination-patterns.md) 了解分页参数的常见命名模式。
+
+## 工具依赖
+
+- **Apifox MCP Server**：必须配置并运行，用于查询接口信息
+- **OpenAPI Spec**：Apifox 项目需要包含完整的 OpenAPI 规范
+
+## 最佳实践
+
+1. **明确需求**：提供清晰的需求描述，有助于准确识别接口
+2. **验证结果**：对识别出的接口进行验证，确保符合预期
+3. **关联查找**：主动查找相关的 CRUD 接口，确保功能完整
+4. **错误处理**：妥善处理接口未找到等异常情况
+5. **结果缓存**：对于重复查询，考虑缓存结果以提高效率
+
+## Resources
+
+### references/
+
+- **interface-identification.md** - 接口识别方法，包含从需求中提取接口名的策略和流程
+- **apifox-mcp-usage.md** - Apifox MCP 使用指南，包含工具说明和使用流程
+- **interface-formatting.md** - 接口信息整理格式，包含输出结构和格式规范
+- **naming-patterns.md** - 接口命名模式参考，包含实际项目中常见的命名模式和匹配策略
+- **business-status-codes.md** - 业务状态码参考，包含完整的业务状态码定义和处理建议
+- **pagination-patterns.md** - 分页参数命名模式，包含请求参数和响应字段的常见命名方式

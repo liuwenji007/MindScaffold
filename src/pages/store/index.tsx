@@ -1,16 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text } from '@tarojs/components';
+import Taro from '@tarojs/taro';
 import { useEmotionStore } from '@/store/emotionStore';
+import { get as apiGet, post as apiPost } from '@/services/api';
 import './index.scss';
 
-const SKINS = [
-  { id: 'skin-1', name: '午夜星空', price: 100, desc: '深邃的星空主题' },
-  { id: 'skin-2', name: '晨曦微光', price: 150, desc: '温暖的日出主题' },
-  { id: 'skin-3', name: '森林秘境', price: 200, desc: '宁静的森林主题' }
-];
+interface ShopItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  item_type: string;
+  asset_url?: string;
+}
 
 export default function StorePage() {
   const points = useEmotionStore(s => s.emotionPoints);
+  const setEmotionPoints = useEmotionStore(s => s.setEmotionPoints);
+  const [items, setItems] = useState<ShopItem[]>([]);
+
+  useEffect(() => {
+    void (async () => {
+      const res = await apiGet<{ items: ShopItem[] }>('/store/items');
+      if (res.data?.items) {
+        setItems(res.data.items);
+      }
+    })();
+  }, []);
+
+  const handlePurchase = async (item: ShopItem) => {
+    if (points < item.price) {
+      Taro.showToast({ title: '情绪点不足', icon: 'none' });
+      return;
+    }
+
+    const res = await apiPost('/store/purchase', { item_id: item.id });
+    if (res.error) {
+      Taro.showToast({ title: res.error, icon: 'none' });
+      return;
+    }
+
+    setEmotionPoints(points - item.price);
+    Taro.showToast({ title: `已兑换「${item.name}」`, icon: 'success' });
+  };
 
   return (
     <View className='storePage'>
@@ -20,13 +52,16 @@ export default function StorePage() {
       </View>
 
       <View className='storeList'>
-        {SKINS.map(item => (
+        {items.map(item => (
           <View key={item.id} className='storeItem'>
             <View className='storeItemMain'>
               <Text className='storeItemName'>{item.name}</Text>
-              <Text className='storeItemDesc'>{item.desc}</Text>
+              <Text className='storeItemDesc'>{item.description}</Text>
             </View>
-            <View className={points >= item.price ? 'storePriceBtn' : 'storePriceBtn storePriceBtnDisabled'}>
+            <View
+              className={points >= item.price ? 'storePriceBtn' : 'storePriceBtn storePriceBtnDisabled'}
+              onClick={() => handlePurchase(item)}
+            >
               <Text className={points >= item.price ? 'storePriceBtnText' : 'storePriceBtnTextDisabled'}>
                 {item.price} 点
               </Text>

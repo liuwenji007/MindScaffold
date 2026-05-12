@@ -3,6 +3,8 @@ import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getAllAwCards } from '@/services/storage';
 import { useEmotionStore } from '@/store/emotionStore';
+import { isLoggedIn, getUserInfo, clearAuth, UserInfo } from '@/services/auth';
+import { get as apiGet } from '@/services/api';
 import TabBar from '@/components/TabBar';
 import { AppIcon } from '@/components/AppIcon';
 import './index.scss';
@@ -12,8 +14,10 @@ export default function Profile() {
   const cards = useEmotionStore(s => s.cards);
   const emotionPoints = useEmotionStore(s => s.emotionPoints);
   const setActiveTab = useEmotionStore(s => s.setActiveTab);
+  const setEmotionPoints = useEmotionStore(s => s.setEmotionPoints);
 
   const [nightCount, setNightCount] = useState(cards.length);
+  const [user, setUser] = useState<UserInfo | null>(getUserInfo());
 
   Taro.useDidShow(() => {
     setActiveTab('me');
@@ -25,10 +29,36 @@ export default function Profile() {
       loadCards(list);
       setNightCount(list.length);
     })();
-  }, [loadCards]);
+
+    // 从后端同步情绪点
+    void (async () => {
+      const res = await apiGet<{ balance: number }>('/points');
+      if (res.data && typeof res.data.balance === 'number') {
+        setEmotionPoints(res.data.balance);
+      }
+    })();
+  }, [loadCards, setEmotionPoints]);
 
   const leafCount = cards.filter(card => card.isLeaf).length;
   const bookmarkCount = cards.filter(card => card.isLeaf && (card.expiryTime ?? 0) <= Date.now()).length;
+
+  const handleLogin = () => {
+    Taro.navigateTo({ url: '/pages/login/index' });
+  };
+
+  const handleLogout = () => {
+    Taro.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？本地数据不会丢失。',
+      success: res => {
+        if (res.confirm) {
+          clearAuth();
+          setUser(null);
+          Taro.showToast({ title: '已退出登录', icon: 'success' });
+        }
+      }
+    });
+  };
 
   return (
     <View className='profile-page'>
@@ -39,8 +69,20 @@ export default function Profile() {
         <View className='profile-avatar-wrap'>
           <AppIcon name='user' size={56} color='#94a3b8' />
         </View>
-        <Text className='profile-me-title'>阿窝的旅伴</Text>
+        <Text className='profile-me-title'>
+          {user ? user.nickname : '阿窝的旅伴'}
+        </Text>
         <Text className='profile-me-sub'>已陪伴你度过 {nightCount} 个夜晚</Text>
+
+        {isLoggedIn() ? (
+          <View className='profile-login-btn' onClick={handleLogout}>
+            <Text className='profile-login-btn-text'>退出登录</Text>
+          </View>
+        ) : (
+          <View className='profile-login-btn' onClick={handleLogin}>
+            <Text className='profile-login-btn-text'>登录 / 注册</Text>
+          </View>
+        )}
       </View>
 
       <View className='profile-stats-grid'>

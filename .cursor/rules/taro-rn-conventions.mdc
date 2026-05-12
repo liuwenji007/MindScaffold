@@ -1,0 +1,70 @@
+---
+description: Taro / React Native 跨端兼容规范，用于 H5 与 RN 共享代码时的结构约定
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+# Taro RN 兼容规范
+
+## View 下的 Text 包裹规则
+
+**规则**：当 `Text` 是 `View` 的子元素且**不是唯一子元素**时，必须用单独的 `View` 包裹该 `Text`，以兼容 React Native。
+
+### 原因
+
+- 在 RN 中，`color`、`fontSize` 等文本样式只能作用在 `Text` 上，`View` 不支持也不继承
+- 当 `Text` 与兄弟节点（如其他 `View`、图标组件）并列时，父 `View` 上的 `color` 等样式不会继承到 `Text`
+- 用单独 `View` 包裹后，可确保布局和样式在 RN 下表现一致
+
+### 正确示例
+
+```tsx
+{/* 正确：Text 有兄弟节点时，用 View 包裹 */}
+<View className="my-actions">
+  <View>
+    <Text className="btn-text">出入记录</Text>
+  </View>
+  <View>
+    <Text className="status inside">已入场</Text>
+  </View>
+</View>
+```
+
+### 错误示例
+
+```tsx
+{/* 错误：Text 与图标并列，父 View 的 color 在 RN 下不会传到 Text */}
+<View className="btn" style={{ color: '#fff' }}>
+  <Icon />
+  <Text>删除</Text>
+</View>
+```
+
+### 特殊情况
+
+- 若 `Text` 是父 `View` 的**唯一子元素**，可不额外包裹
+- 文本相关样式（`color`、`fontSize` 等）应直接写在 `Text` 或包裹 `Text` 的 `View` 上，避免依赖父级继承
+
+---
+
+## View 的 width 规则
+
+**规则**：不要给 `View` 默认设置 `width: 100%`，仅在实际需要时设置。`flex` 布局与 `width: 100%` 组合容易产生展示问题（如溢出、滚动异常等）。
+
+### 原因
+
+- 在 RN 中，`flex: 1` 已能撑满父容器，额外加 `width: 100%` 会与 flex 产生冲突
+- 某些场景下 `width: 100%` + flex 会导致子元素溢出或无法正确计算尺寸
+
+### 建议
+
+- 需要占满宽度时，优先使用 `flex: 1` 或 `alignSelf: stretch`
+- 仅在明确需要固定全宽（如全宽按钮、分隔线）时使用 `width: 100%`
+
+---
+
+## RN 复合选择器兼容
+
+**规则**：RN 端样式系统对 `.a.b` 这类复合选择器（同一元素多 class）支持不稳定，可能导致 `background`、`color` 等样式失效。
+
+**建议**：在 RN 专用样式（`*.rn.scss`）中，将复合选择器改为独立 modifier 类，如 `.a.b` → `.a-b`，并在 tsx 中显式添加该类。

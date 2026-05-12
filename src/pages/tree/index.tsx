@@ -1,14 +1,24 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
+import { get as apiGet, post as apiPost } from '@/services/api';
 import type { AwEmotionCard } from '@/types/emotion';
 import { AppIcon } from '@/components/AppIcon';
 import TabBar from '@/components/TabBar';
 import { isHarmonyHybrid, isRN } from '@/platform/runtime';
 import { LeafItem } from './components/LeafItem';
 import './index.scss';
+
+interface CommunityLeaf {
+  id: string;
+  story: string;
+  feedback: string;
+  likes_count: number;
+  is_active: boolean;
+  created_at: string;
+}
 
 function formatRemain(ms: number): string {
   if (ms <= 0) return '00:00:00';
@@ -24,6 +34,7 @@ export default function TreePage() {
   const setActiveTab = useEmotionStore(s => s.setActiveTab);
   const [selected, setSelected] = useState<AwEmotionCard | null>(null);
   const [now, setNow] = useState(Date.now());
+  const [communityLeaves, setCommunityLeaves] = useState<CommunityLeaf[]>([]);
   const isCompactMode = isRN() || isHarmonyHybrid();
 
   React.useEffect(() => {
@@ -34,6 +45,16 @@ export default function TreePage() {
   Taro.useDidShow(() => {
     setActiveTab('tree');
   });
+
+  // 获取社区叶片
+  useEffect(() => {
+    void (async () => {
+      const res = await apiGet<{ leaves: CommunityLeaf[] }>('/leaves');
+      if (res.data?.leaves) {
+        setCommunityLeaves(res.data.leaves);
+      }
+    })();
+  }, []);
 
   const activeLeaves = useMemo(
     () => cards.filter(card => card.isLeaf && (card.expiryTime ?? 0) > now),
@@ -69,6 +90,7 @@ export default function TreePage() {
   return (
     <View className={isCompactMode ? 'treePage treePageCompact' : 'treePage'}>
       <View className='treeBackdrop' />
+      <View className='treeSvgBg' />
       <View className='treeHeader'>
         <Text className='treeTitle'>生命之树</Text>
         <Text className='treeSubTitle'>每一片叶子，都是一段被温柔对待的时光</Text>
@@ -94,13 +116,38 @@ export default function TreePage() {
         <View className='treeStatItem'>
           <View className='treeStatTop'>
             <AppIcon name='user' size={28} color='#7cc6ff' />
-            <Text className='treeStatValue treeStatValueBlue'>{bookmarks.length * 12 + 42}</Text>
+            <Text className='treeStatValue treeStatValueBlue'>{communityLeaves.length}</Text>
           </View>
           <Text className='treeStatLabel'>同路旅伴</Text>
         </View>
       </View>
 
       <View className='treeBody'>
+        {/* 社区叶片 */}
+        {communityLeaves.length > 0 ? (
+          <View className='treeSection'>
+            <Text className='treeSectionTitle'>旅伴叶片</Text>
+            {communityLeaves.map((leaf) => (
+              <View key={leaf.id} className='treeBookmarkRow'>
+                <View className='treeBookmarkLeft'>
+                  <View className='treeBookmarkIcon'>
+                    <AppIcon name='leaf' size={36} color='rgba(124, 198, 255, 0.7)' />
+                  </View>
+                  <View className='treeBookmarkMeta'>
+                    <Text className='treeBookmarkStory'>"{leaf.story?.slice(0, 40)}..."</Text>
+                  </View>
+                </View>
+                <View className='treeBookmarkRight'>
+                  <View className='treeBookmarkSun'>
+                    <AppIcon name='sun' size={24} color='rgba(255,179,71,0.7)' />
+                    <Text className='treeBookmarkSunNum'>{leaf.likes_count ?? 0}</Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
         {activeLeaves.length === 0 && bookmarks.length === 0 ? (
           <View className='treeEmpty'>
             <AppIcon name='leaf' size={96} color='rgba(148,163,184,0.3)' />
@@ -178,7 +225,7 @@ export default function TreePage() {
                 <Text className='treeDetailSectionLabel'>故事回顾</Text>
               </View>
               <Text className='treeDetailStory'>
-                “{selected.story || selected.mirrorText}”
+                "{selected.story || selected.mirrorText}"
               </Text>
             </View>
             {selected.feedback ? (

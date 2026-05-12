@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useEmotionStore } from '@/store/emotionStore';
+import { post } from '@/services/api';
 import { AppIcon } from '@/components/AppIcon';
 import './index.scss';
-
-function buildMirrorCopy(input: string): string {
-  const frag = input ? `「${input}」` : '沉重';
-  return `听起来，你现在感到有些${frag}。这并不是你的错，大脑只是在试图保护你免受那些不确定性的伤害。我们可以试着把这些情绪看作是路过的云，而不是你本身。`;
-}
 
 export default function Mirror() {
   const draft = useEmotionStore(s => s.draft);
@@ -17,6 +13,7 @@ export default function Mirror() {
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState('');
   const [reloadKey, setReloadKey] = useState(0);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!draft) {
@@ -25,11 +22,24 @@ export default function Mirror() {
     }
 
     setLoading(true);
-    const t = setTimeout(() => {
-      setText(buildMirrorCopy(draft.input));
+    setError('');
+
+    void (async () => {
+      const res = await post<{ mirror_text: string }>('/mirror', {
+        input_text: draft.input,
+        intensity: draft.intensity,
+        deconstruction: draft.deconstructionAnswers || {},
+      });
+
+      if (res.error) {
+        setError(res.error);
+        setLoading(false);
+        return;
+      }
+
+      setText(res.data?.mirror_text || buildFallbackCopy(draft.input));
       setLoading(false);
-    }, 2000);
-    return () => clearTimeout(t);
+    })();
   }, [draft, reloadKey]);
 
   const handleConfirm = () => {
@@ -42,11 +52,7 @@ export default function Mirror() {
   };
 
   if (!draft) {
-    return (
-      <View className='mirror-page-loading'>
-        <Text>正在回到首页…</Text>
-      </View>
-    );
+    return null;
   }
 
   if (loading) {
@@ -74,9 +80,17 @@ export default function Mirror() {
         </View>
         <Text className='mirror-heading'>这是我听到的你</Text>
 
-        <View className='mirror-card'>
-          <Text className='mirror-text'>{text}</Text>
-        </View>
+        {error ? (
+          <View className='mirror-card'>
+            <Text className='mirror-text' style={{ color: '#e07a5f' }}>
+              {error}
+            </Text>
+          </View>
+        ) : (
+          <View className='mirror-card'>
+            <Text className='mirror-text'>{text}</Text>
+          </View>
+        )}
 
         <View className='mirror-actions'>
           <View className='mirror-btn secondary' onClick={handleRegenerate}>
@@ -89,4 +103,10 @@ export default function Mirror() {
       </View>
     </View>
   );
+}
+
+/** 后备文案：API 不可用时使用本地生成 */
+function buildFallbackCopy(input: string): string {
+  const frag = input ? `「${input}」` : '沉重';
+  return `听起来，你现在感到有些${frag}。这并不是你的错，大脑只是在试图保护你免受那些不确定性的伤害。我们可以试着把这些情绪看作是路过的云，而不是你本身。`;
 }

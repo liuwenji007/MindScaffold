@@ -1,18 +1,81 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { View, Text, Input, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { AppIcon } from '@/components/AppIcon';
 import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
+import { API } from '@/config/api';
+import { getToken } from '@/services/auth';
 import type { ChatMessage } from '@/types/emotion';
 import './index.scss';
 
-const TYPING_DELAY_MS = 900;
+// —— SSE 流式读取 ——
+async function streamChat(
+  cardId: string | null,
+  messages: ChatMessage[]
+): Promise<string> {
+  const token = getToken();
+
+  const response = await fetch(`${API.V1}/chat/stream`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({
+      card_id: cardId,
+      messages: messages.map(m => ({ role: m.role, content: m.content })),
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(err || '对话请求失败');
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) {
+    throw new Error('不支持流式读取');
+  }
+
+  const decoder = new TextDecoder();
+  let fullText = '';
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+        try {
+          // SSE format: event: message\ndata: "chunk text"\n\n
+          // Gin SSEvent writes: "event: message\ndata: chunk\n\n"
+          // Try to parse as JSON string or use directly
+          const cleaned = data.replace(/^"|"$/g, '');
+          fullText += cleaned;
+        } catch {
+          fullText += data;
+        }
+      }
+    }
+  }
+
+  return fullText || '阿窝正在思考…';
+}
+
+// —— 后备文案 ——
+const FALLBACK_RESPONSE = '我在这里听着。这种感觉确实不容易，但你已经做得很好了，愿意把它表达出来。';
 
 function createDefaultMessages(seedText: string): ChatMessage[] {
   return [
     { role: 'ai', content: seedText },
-    { role: 'ai', content: '如果你愿意，可以再多跟我聊聊这件事，或者我们直接开始寻找今晚的微小行动？' }
   ];
 }
 
@@ -42,6 +105,7 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const [scrollAnchor, setScrollAnchor] = useState('chat-anchor-top');
+  const streamRef = useRef(false);
 
   const persistMessages = async (next: ChatMessage[]) => {
     if (historyChatCardId) {
@@ -55,28 +119,38 @@ export default function ChatPage() {
   const handleSend = async () => {
     const content = input.trim();
     if (!content || typing) return;
+
     const userMessage: ChatMessage = { role: 'user', content };
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
     setScrollAnchor('chat-anchor-bottom');
     setInput('');
     setTyping(true);
+    streamRef.current = true;
     await persistMessages(nextMessages);
 
-    setTimeout(async () => {
-      const aiMessage: ChatMessage = {
-        role: 'ai',
-        content: '我在这里听着。这种感觉确实不容易，但你已经做得很好了，愿意把它表达出来。'
-      };
+    try {
+      const aiContent = await streamChat(historyChatCardId, [userMessage]);
+      if (!streamRef.current) return; // 用户已离开
+
+      const aiMessage: ChatMessage = { role: 'ai', content: aiContent };
       const merged = [...nextMessages, aiMessage];
       setMessages(merged);
+      await persistMessages(merged);
+    } catch {
+      if (!streamRef.current) return;
+      const aiMessage: ChatMessage = { role: 'ai', content: FALLBACK_RESPONSE };
+      const merged = [...nextMessages, aiMessage];
+      setMessages(merged);
+      await persistMessages(merged);
+    } finally {
       setTyping(false);
       setScrollAnchor('chat-anchor-bottom');
-      await persistMessages(merged);
-    }, TYPING_DELAY_MS);
+    }
   };
 
   const handleFinish = () => {
+    streamRef.current = false;
     if (historyChatCardId) {
       setHistoryChatCardId(null);
       Taro.navigateBack();

@@ -1,0 +1,46 @@
+---
+description: BMAD SCP Workflow: save-preference
+globs: 
+alwaysApply: false
+---
+
+# Save Preference
+
+## 职责划分
+
+- **Workflow**：提供 `config_path`、`project_root`，解析地址。
+- **本 Skill**：分析能力——schema、读/合并/重置逻辑、偏好采集指引。
+
+接收调用方传入的 `config_path`（配置文件绝对路径）。若未传入，默认 `{project-root}/_bmad/scp/config.yaml`。
+
+## Schema 与合并规则
+
+完整字段说明见 [references/schema.md](references/schema.md)。摘要：
+
+- **顶层**：`user_name`、`communication_language`、`output_folder` 等（与 BMAD SCP 兼容）。
+- **project**：`tech_stack`（framework、component_library、private_libs）、`code_style`、`tools`、`user_habits`。
+- **合并**：深合并；标量与数组以新值覆盖。
+
+## 操作流程
+
+### 读取
+
+1. 读取 `config_path` 内容（不存在则视为 `{}`）。
+2. 内存中替换 `{project-root}` 为实际路径后展示；**不要**将替换后的绝对路径写回文件。
+
+### 合并/更新
+
+1. 读取现有 config。
+2. 按 [references/prompting-guide.md](references/prompting-guide.md) 采集用户偏好，构建更新对象。
+3. 深合并后写回 `config_path`，保留 YAML 格式。
+
+### 重置
+
+- **全部**：写空或仅保留 `# SCP Module Configuration`。
+- **指定区块**：删除顶层键（如 `project`）后写回。
+
+## 资源
+
+- **references/schema.md**：字段说明、示例、合并规则。
+- **references/prompting-guide.md**：偏好采集问询与结构化提取。
+- **scripts/config_yaml.py**：可选脚本（需 PyYAML），用于程序化 read/merge/reset。

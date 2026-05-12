@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text } from '@tarojs/components';
 import type { AwEmotionCard } from '@/types/emotion';
+import { AppIcon } from '@/components/AppIcon';
 
 interface HistoryCardItemProps {
   card: AwEmotionCard;
@@ -27,14 +28,17 @@ export function HistoryCardItem({ card, onOpen, onComplete }: HistoryCardItemPro
               onComplete(card);
             }}
           >
-            <Text className='historyQuickDoneText'>✓</Text>
+            <AppIcon name='check' size={20} color='var(--color-accent-warm)' />
           </View>
         ) : null}
       </View>
-      <Text className='historyCardMirror'>「{card.mirrorText}」</Text>
+      <Text className='historyCardMirror'>"{card.mirrorText}"</Text>
       <View className='historyCardFooter'>
-        <Text className='historyCardAction'>微行动：{card.action}</Text>
-        <Text className='historyCardArrow'>›</Text>
+        <View className='historyCardActionRow'>
+          <AppIcon name='sparkles' size={14} color='var(--color-accent-warm)' />
+          <Text className='historyCardAction'>微行动：{card.action}</Text>
+        </View>
+        <AppIcon name='arrowRight' size={16} color='rgba(148,163,184,0.4)' />
       </View>
     </View>
   );

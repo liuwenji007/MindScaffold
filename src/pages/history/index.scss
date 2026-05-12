@@ -1,7 +1,7 @@
 .history-page {
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 34px 26px 150px;
+  padding: 80px 48px 192px;
   background: linear-gradient(180deg, #0f1218 0%, #151921 55%, #1a1f2a 100%);
 }
 
@@ -10,19 +10,20 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 32px;
+  margin-bottom: 16px;
 }
 
 .history-title-inline {
-  font-size: 42px;
+  font-size: 48px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .history-sub {
-  margin-top: 12px;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-top: 8px;
+  margin-bottom: 40px;
+  font-size: 28px;
   line-height: 1.6;
   color: var(--text-secondary);
 }
@@ -31,14 +32,14 @@
   display: flex;
   flex-direction: row;
   border-radius: 999px;
-  padding: 4px;
+  padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.06);
 }
 
 .historyFilterItem {
-  width: 70px;
-  padding: 10px 0;
+  min-width: 96px;
+  padding: 16px 32px;
   border-radius: 999px;
   text-align: center;
 }
@@ -48,13 +49,13 @@
 }
 
 .historyFilterText {
-  font-size: 22px;
+  font-size: 24px;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
 .historyFilterTextOn {
   color: #151921;
-  font-weight: 600;
 }
 
 .empty-area {
@@ -63,31 +64,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
 }
 
 .empty-text {
-  font-size: 30px;
-  color: rgba(224, 230, 237, 0.45);
+  font-size: 28px;
+  font-style: italic;
+  color: rgba(224, 230, 237, 0.4);
 }
 
 .empty-hint {
-  margin-top: 10px;
-  font-size: 22px;
-  color: rgba(148, 163, 184, 0.55);
+  font-size: 24px;
+  color: rgba(148, 163, 184, 0.5);
 }
 
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32px;
 }
 
 .historyCard {
-  border-radius: 26px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  border-radius: 48px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
 }
 
 .historyCardHeader {
@@ -95,16 +97,18 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 32px;
 }
 
 .historyCardMeta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .historyCardDate {
-  font-size: 19px;
+  font-size: 20px;
+  font-family: monospace;
   color: rgba(148, 163, 184, 0.9);
 }
 
@@ -112,73 +116,83 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 .historyCardIntensity {
-  font-size: 22px;
+  font-size: 28px;
   color: var(--color-accent-warm);
   font-weight: 700;
 }
 
 .historyCardDoneTag {
   font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: #38b981;
   background: rgba(56, 185, 129, 0.18);
-  padding: 4px 12px;
+  padding: 4px 16px;
   border-radius: 999px;
 }
 
 .historyQuickDone {
-  width: 42px;
-  height: 42px;
-  border-radius: 21px;
+  width: 72px;
+  height: 72px;
+  border-radius: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 179, 71, 0.12);
-}
-
-.historyQuickDoneText {
-  font-size: 22px;
-  color: var(--color-accent-warm);
+  background: rgba(255, 179, 71, 0.1);
 }
 
 .historyCardMirror {
-  margin-top: 14px;
-  font-size: 23px;
-  line-height: 1.6;
-  color: rgba(224, 230, 237, 0.85);
+  margin-bottom: 40px;
+  font-size: 28px;
+  line-height: 1.7;
+  color: rgba(224, 230, 237, 0.8);
+  font-style: italic;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .historyCardFooter {
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.historyCardAction {
-  font-size: 20px;
-  color: rgba(148, 163, 184, 0.95);
+.historyCardActionRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  overflow: hidden;
 }
 
-.historyCardArrow {
-  font-size: 26px;
-  color: rgba(148, 163, 184, 0.6);
+.historyCardAction {
+  font-size: 24px;
+  color: rgba(148, 163, 184, 0.95);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .clear-area {
-  margin-top: 22px;
+  margin-top: 44px;
   display: flex;
   justify-content: center;
 }
 
 .clear-btn {
-  padding: 10px 20px;
+  padding: 20px 40px;
   border-radius: 999px;
   border: 1px solid rgba(224, 122, 95, 0.35);
   background: rgba(224, 122, 95, 0.08);
@@ -186,56 +200,86 @@
 
 .clear-btn-text {
   color: #e07a5f;
-  font-size: 21px;
+  font-size: 24px;
 }
+
+/* === Detail Panel === */
 
 .historyModalMask {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(10, 12, 18, 0.86);
+  background: rgba(15, 18, 24, 0.95);
+  display: flex;
+  flex-direction: column;
 }
 
-.historyModal {
-  height: 100%;
-  box-sizing: border-box;
-  padding: 32px 24px 140px;
-  overflow-y: scroll;
-  background: #151921;
+.historyModalHeader {
+  padding: 96px 48px 48px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .historyModalBack {
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
+  width: 72px;
+  height: 72px;
+  border-radius: 36px;
   background: rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.historyModalBackText {
-  font-size: 34px;
-  color: var(--text-secondary);
+.historyModalHeaderRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.historyModalIntensity {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-accent-warm);
+}
+
+.historyModalDoneTag {
+  font-size: 20px;
+  font-weight: 700;
+  color: #38b981;
+  background: rgba(56, 185, 129, 0.18);
+  padding: 4px 16px;
+  border-radius: 999px;
+}
+
+.historyModal {
+  flex: 1;
+  box-sizing: border-box;
+  padding: 0 48px 320px;
+  overflow-y: scroll;
 }
 
 .historyModalDate {
-  margin-top: 20px;
   display: block;
-  font-size: 20px;
+  font-size: 24px;
+  font-family: monospace;
   color: rgba(148, 163, 184, 0.9);
+  margin-bottom: 16px;
 }
 
 .historyModalTitle {
-  margin-top: 8px;
   display: block;
-  font-size: 42px;
+  font-size: 48px;
   color: var(--text-primary);
   font-weight: 700;
+  margin-bottom: 80px;
 }
 
 .historySection {
-  margin-top: 26px;
+  margin-top: 96px;
 }
 
 .historySectionRow {
@@ -243,197 +287,288 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 32px;
 }
 
 .historySectionLabel {
-  font-size: 18px;
-  letter-spacing: 2px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.72);
+  color: rgba(148, 163, 184, 0.6);
+  margin-bottom: 32px;
+}
+
+.historySectionRow .historySectionLabel {
+  margin-bottom: 0;
+}
+
+/* "当时的心情" accent bar layout */
+.historyInputSection {
+  position: relative;
+  padding-left: 48px;
+}
+
+.historyInputBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: rgba(255, 179, 71, 0.2);
+  border-radius: 4px;
 }
 
 .historySectionBody {
   display: block;
-  margin-top: 10px;
-  font-size: 26px;
+  font-size: 36px;
   line-height: 1.7;
   color: var(--text-primary);
+  font-style: italic;
+  font-weight: 300;
 }
 
 .historyMirrorBox {
-  margin-top: 10px;
-  border-radius: 20px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  border-radius: 64px;
+  padding: 48px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.historyMirrorWatermark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 32px;
 }
 
 .historyMirrorBoxText {
-  font-size: 24px;
+  font-size: 32px;
   line-height: 1.6;
-  color: var(--text-primary);
+  color: rgba(224, 230, 237, 0.9);
 }
 
 .historyContinueChat {
-  padding: 6px 14px;
-  border-radius: 18px;
+  padding: 12px 28px;
+  border-radius: 999px;
   background: rgba(255, 179, 71, 0.12);
 }
 
 .historyContinueChatText {
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   color: var(--color-accent-warm);
 }
 
 .historyChatHint {
-  margin-top: 10px;
-  font-size: 24px;
-  color: rgba(148, 163, 184, 0.95);
+  margin-top: 16px;
+  font-size: 20px;
+  font-style: italic;
+  color: rgba(148, 163, 184, 0.4);
 }
 
 .historyChatPreviewList {
-  margin-top: 10px;
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
 }
 
 .historyChatPreviewItem {
-  border-radius: 18px;
-  padding: 10px 12px;
+  border-radius: 32px;
+  padding: 24px;
 }
 
 .historyChatPreviewItemUser {
-  margin-left: 46px;
+  margin-left: 64px;
   background: rgba(255, 179, 71, 0.12);
 }
 
 .historyChatPreviewItemAi {
-  margin-right: 46px;
-  background: rgba(255, 255, 255, 0.06);
+  margin-right: 64px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .historyChatPreviewTextUser {
-  font-size: 20px;
+  font-size: 24px;
   line-height: 1.5;
   color: var(--color-accent-warm);
 }
 
 .historyChatPreviewTextAi {
-  font-size: 20px;
+  font-size: 24px;
   line-height: 1.5;
   color: var(--text-secondary);
 }
 
+/* Action box with status icon */
 .historyActionBox {
-  margin-top: 10px;
-  border-radius: 20px;
-  padding: 16px;
-  background: rgba(255, 179, 71, 0.12);
-  border: 1px solid rgba(255, 179, 71, 0.22);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+  padding: 48px;
+  border-radius: 64px;
+  border: 1px solid rgba(255, 179, 71, 0.2);
+  background: rgba(255, 179, 71, 0.1);
+}
+
+.historyActionBoxDone {
+  border-color: rgba(56, 185, 129, 0.2);
+  background: rgba(56, 185, 129, 0.1);
+}
+
+.historyActionIcon {
+  width: 96px;
+  height: 96px;
+  border-radius: 48px;
+  background: var(--color-accent-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.historyActionIconDone {
+  background: #38b981;
+}
+
+.historyActionContent {
+  flex: 1;
+  overflow: hidden;
 }
 
 .historyActionTitle {
-  font-size: 24px;
+  font-size: 32px;
+  font-weight: 700;
   color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.historyActionTitleDone {
+  color: #5de0a6;
+}
+
+.historyActionTimeRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .historyActionTime {
-  margin-top: 8px;
-  font-size: 20px;
-  color: rgba(148, 163, 184, 0.92);
+  font-size: 24px;
+  color: rgba(148, 163, 184, 0.6);
 }
 
-.historyModalButtons {
-  margin-top: 28px;
+/* Bottom buttons - fixed gradient bar */
+.historyModalBtnBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 96px 48px 80px;
+  background: linear-gradient(to top, #0f1218 0%, #0f1218 50%, transparent 100%);
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 24px;
 }
 
 .historyModalButton {
   flex: 1;
   border-radius: 999px;
-  padding: 16px 0;
+  padding: 32px 0;
   text-align: center;
 }
 
 .historyModalButtonPrimary {
   background: var(--color-accent-warm);
+  box-shadow: 0 16px 40px rgba(255, 179, 71, 0.3);
 }
 
 .historyModalButtonPrimaryText {
   color: #151921;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
 }
 
 .historyModalButtonGreen {
-  background: rgba(56, 185, 129, 0.15);
-  border: 1px solid rgba(56, 185, 129, 0.3);
+  background: #22c55e;
+  box-shadow: 0 16px 40px rgba(34, 197, 94, 0.3);
 }
 
 .historyModalButtonGreenText {
-  color: #5de0a6;
-  font-size: 22px;
-  font-weight: 600;
+  color: #151921;
+  font-size: 28px;
+  font-weight: 700;
 }
 
 .historyModalButtonDanger {
-  background: rgba(224, 122, 95, 0.12);
+  background: rgba(224, 122, 95, 0.08);
   border: 1px solid rgba(224, 122, 95, 0.3);
 }
 
 .historyModalButtonDangerText {
   color: #ff9f89;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
 }
 
+/* Share sheet - slides up from bottom */
 .historyShareSheet {
-  margin-top: 24px;
-  border-radius: 24px;
-  padding: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #151921;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 80px 80px 0 0;
+  padding: 64px;
+  z-index: 10;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .historyShareTitle {
-  font-size: 26px;
+  font-size: 40px;
+  font-weight: 700;
   color: var(--text-primary);
-  font-weight: 600;
+  text-align: center;
+  margin-bottom: 48px;
 }
 
 .historyShareTextarea {
-  margin-top: 14px;
   width: auto;
-  min-height: 160px;
+  min-height: 320px;
   box-sizing: border-box;
-  border-radius: 18px;
+  border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(12, 14, 20, 0.28);
-  padding: 16px;
+  padding: 32px;
   color: var(--text-primary);
-  font-size: 23px;
+  font-size: 28px;
 }
 
 .historySharePlaceholder {
   color: rgba(148, 163, 184, 0.55);
-  font-size: 23px;
+  font-size: 28px;
 }
 
 .historyShareButtons {
-  margin-top: 14px;
+  margin-top: 48px;
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 24px;
 }
 
 .historyShareButton {
   flex: 1;
   text-align: center;
   border-radius: 999px;
-  padding: 14px 0;
+  padding: 32px 0;
 }
 
 .historyShareButtonGhost {
@@ -443,7 +578,7 @@
 
 .historyShareButtonGhostText {
   color: var(--text-secondary);
-  font-size: 21px;
+  font-size: 28px;
 }
 
 .historyShareButtonPrimary {
@@ -452,10 +587,11 @@
 
 .historyShareButtonPrimaryText {
   color: #151921;
-  font-size: 21px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
 }
 
+/* Let-go ritual overlay */
 .ritual-overlay {
   position: fixed;
   inset: 0;
@@ -468,47 +604,48 @@
 }
 
 .ritual-card-float {
-  width: 280px;
-  border-radius: 24px;
+  width: 560px;
+  border-radius: 48px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 24px;
+  padding: 48px;
   text-align: center;
   animation: ritual-float-up 2.8s ease-in forwards;
 }
 
 .ritual-wind {
-  font-size: 42px;
+  font-size: 84px;
   color: var(--color-accent-warm);
 }
 
 .ritual-sub {
-  margin-top: 12px;
-  font-size: 22px;
+  margin-top: 24px;
+  font-size: 28px;
   color: rgba(148, 163, 184, 0.95);
 }
 
 .ritual-copy {
-  margin-top: 28px;
+  margin-top: 56px;
   text-align: center;
 }
 
 .ritual-h3 {
-  font-size: 34px;
+  font-size: 48px;
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 .ritual-p {
-  margin-top: 10px;
-  font-size: 22px;
+  margin-top: 16px;
+  font-size: 28px;
   color: rgba(148, 163, 184, 0.9);
 }
 
 .ritual-particle {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
   background: rgba(255, 179, 71, 0.9);
   animation: ritual-particle-rise 2.6s ease-in-out infinite;
 }
@@ -519,7 +656,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateY(-120px);
+    transform: translateY(-240px);
     opacity: 0;
   }
 }
@@ -533,7 +670,7 @@
     opacity: 0.9;
   }
   100% {
-    transform: translateY(-220px) scale(0.2);
+    transform: translateY(-440px) scale(0.2);
     opacity: 0;
   }
 }

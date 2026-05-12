@@ -13,6 +13,10 @@ const config = {
   outputRoot: 'dist',
   plugins: ['@tarojs/plugin-framework-react'],
   defineConstants: {},
+  /** 写入 DefinePlugin，避免 H5 运行时访问未定义的 process */
+  env: {
+    TARO_APP_API_URL: JSON.stringify(process.env.TARO_APP_API_URL || 'http://localhost:8080'),
+  },
   alias: {
     '@': require('path').resolve(__dirname, '..', 'src')
   },
@@ -55,6 +59,15 @@ const config = {
     },
     webpackChain(chain) {
       chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin);
+      // @tarojs/components 预构建产物中的 webpackExports 提示，对行为无影响
+      chain.merge({
+        ignoreWarnings: [
+          {
+            module: /@tarojs[\\/]components/,
+            message: /webpackExports/
+          }
+        ]
+      });
     }
   }
 };
