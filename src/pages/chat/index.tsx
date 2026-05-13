@@ -9,15 +9,53 @@ import { getToken } from '@/services/auth';
 import type { ChatMessage } from '@/types/emotion';
 import './index.scss';
 
-// —— SSE 流式读取 ——
+// —— SSE：解析单行 data 字段（兼容 Gin SSEvent、CRLF、上游 OpenAI JSON 行） ——
+function parseSseDataPayload(raw: string): string {
+  const t = raw.replace(/\r$/, '');
+  if (t === '[DONE]' || t.trim() === '[DONE]') return '';
+  const trimmed = t.trimStart();
+  if (trimmed.startsWith('{')) {
+    try {
+      const o = JSON.parse(trimmed) as {
+        choices?: Array<{ delta?: { content?: string } }>;
+      };
+      return o.choices?.[0]?.delta?.content ?? '';
+    } catch {
+      /* 非 JSON 则按纯文本处理 */
+    }
+  }
+  if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    try {
+      const s = JSON.parse(trimmed);
+      return typeof s === 'string' ? s : '';
+    } catch {
+      /* fallthrough */
+    }
+  }
+  return t.replace(/^"|"$/g, '');
+}
+
+function consumeSseLine(line: string, onPiece: (piece: string) => void): void {
+  const s = line.replace(/\r$/, '');
+  const m = s.match(/^\s*data:\s*(.*)$/);
+  if (!m) return;
+  const payload = m[1];
+  if (payload === '[DONE]' || payload.trim() === '[DONE]') return;
+  const piece = parseSseDataPayload(payload);
+  if (piece) onPiece(piece);
+}
+
+// —— SSE 流式读取（结束时必须处理 buffer 残留行，否则最后一帧常丢失） ——
 async function streamChat(
   cardId: string | null,
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  onDelta?: (accumulated: string) => void
 ): Promise<string> {
   const token = getToken();
 
   const response = await fetch(`${API.V1}/chat/stream`, {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -42,32 +80,33 @@ async function streamChat(
   let fullText = '';
   let buffer = '';
 
+  const append = (piece: string) => {
+    fullText += piece;
+    onDelta?.(fullText);
+  };
+
   while (true) {
     const { done, value } = await reader.read();
-    if (done) break;
+    if (value?.length) {
+      buffer += decoder.decode(value, { stream: !done });
+    }
 
-    buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split('\n');
-    buffer = lines.pop() || '';
-
+    buffer = lines.pop() ?? '';
     for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        const data = line.slice(6);
-        if (data === '[DONE]') continue;
-        try {
-          // SSE format: event: message\ndata: "chunk text"\n\n
-          // Gin SSEvent writes: "event: message\ndata: chunk\n\n"
-          // Try to parse as JSON string or use directly
-          const cleaned = data.replace(/^"|"$/g, '');
-          fullText += cleaned;
-        } catch {
-          fullText += data;
-        }
+      consumeSseLine(line, append);
+    }
+
+    if (done) {
+      buffer += decoder.decode();
+      for (const line of buffer.split('\n')) {
+        consumeSseLine(line, append);
       }
+      break;
     }
   }
 
-  return fullText || '阿窝正在思考…';
+  return fullText;
 }
 
 // —— 后备文案 ——
@@ -130,10 +169,18 @@ export default function ChatPage() {
     await persistMessages(nextMessages);
 
     try {
-      const aiContent = await streamChat(historyChatCardId, [userMessage]);
+      const onDelta = (acc: string) => {
+        if (!streamRef.current) return;
+        if (acc.length > 0) setTyping(false);
+        setMessages([...nextMessages, { role: 'ai', content: acc }]);
+        setScrollAnchor('chat-anchor-bottom');
+      };
+
+      const aiContent = await streamChat(historyChatCardId, [userMessage], onDelta);
       if (!streamRef.current) return; // 用户已离开
 
-      const aiMessage: ChatMessage = { role: 'ai', content: aiContent };
+      const text = aiContent.trim() ? aiContent : FALLBACK_RESPONSE;
+      const aiMessage: ChatMessage = { role: 'ai', content: text };
       const merged = [...nextMessages, aiMessage];
       setMessages(merged);
       await persistMessages(merged);
