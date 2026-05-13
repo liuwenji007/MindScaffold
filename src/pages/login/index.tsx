@@ -8,7 +8,8 @@ import './index.scss';
 type LoginMode = 'code' | 'password';
 
 export default function LoginPage() {
-  const [phone, setPhone] = useState('');
+  /** 验证码登录为手机号；密码登录为账号或手机号（与后端 openid 一致） */
+  const [accountOrPhone, setAccountOrPhone] = useState('');
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [isRegister, setIsRegister] = useState(false);
@@ -49,12 +50,12 @@ export default function LoginPage() {
 
   const handleSendCode = async () => {
     setError('');
-    if (!/^1[3-9]\d{9}$/.test(phone)) {
+    if (!/^1[3-9]\d{9}$/.test(accountOrPhone)) {
       Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
     }
 
-    const ok = await sendVerificationCode(phone);
+    const ok = await sendVerificationCode(accountOrPhone);
     if (ok) {
       Taro.showToast({ title: '验证码已发送（开发环境请查看终端日志）', icon: 'none', duration: 3000 });
       startCountdown();
@@ -65,8 +66,12 @@ export default function LoginPage() {
 
   const handleSubmit = async () => {
     setError('');
-    if (!phone) {
-      Taro.showToast({ title: '请输入手机号', icon: 'none' });
+    const id = accountOrPhone.trim();
+    if (!id) {
+      Taro.showToast({
+        title: loginMode === 'password' ? '请输入账号或手机号' : '请输入手机号',
+        icon: 'none',
+      });
       return;
     }
 
@@ -79,14 +84,14 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      user = await passwordLogin(phone, password);
+      user = await passwordLogin(id, password);
     } else {
       if (!code) {
         Taro.showToast({ title: '请输入验证码', icon: 'none' });
         setLoading(false);
         return;
       }
-      user = await verifyCode(phone, code);
+      user = await verifyCode(id, code);
     }
 
     setLoading(false);
@@ -98,7 +103,7 @@ export default function LoginPage() {
         Taro.switchTab({ url: '/pages/index/index' });
       }, 800);
     } else {
-      setError(loginMode === 'password' ? '手机号或密码错误' : '验证码错误或已过期');
+      setError(loginMode === 'password' ? '账号/手机号或密码错误' : '验证码错误或已过期');
     }
   };
 
@@ -154,21 +159,23 @@ export default function LoginPage() {
               setError('');
             }}
           >
-            <Text className='login-mode-tab-label'>密码登录</Text>
+            <Text className='login-mode-tab-label'>账号密码</Text>
           </View>
         </View>
 
         <View className='login-field'>
-          <Text className='login-label'>手机号</Text>
+          <Text className='login-label'>
+            {loginMode === 'password' ? '账号 / 手机号' : '手机号'}
+          </Text>
           <View className='login-input-wrap'>
             <Input
               className='login-input'
-              type='number'
-              maxlength={11}
-              placeholder='请输入手机号'
+              type={loginMode === 'password' ? 'text' : 'number'}
+              maxlength={loginMode === 'password' ? 32 : 11}
+              placeholder={loginMode === 'password' ? '请输入账号或手机号' : '请输入手机号'}
               placeholderClass='login-placeholder'
-              value={phone}
-              onInput={e => setPhone(e.detail.value)}
+              value={accountOrPhone}
+              onInput={e => setAccountOrPhone(e.detail.value)}
             />
           </View>
         </View>
@@ -228,7 +235,11 @@ export default function LoginPage() {
         {/* 超管快捷入口 (开发环境) */}
         <View
           className='login-admin-hint'
-          onClick={() => { setPhone('admin'); setPassword('admin123'); setLoginMode('password'); }}
+          onClick={() => {
+            setAccountOrPhone('admin');
+            setPassword('admin123');
+            setLoginMode('password');
+          }}
         >
           <Text className='login-admin-hint-text'>开发：点击填入超管账号</Text>
         </View>
