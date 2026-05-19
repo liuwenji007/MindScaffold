@@ -187,6 +187,12 @@
   font-size: 26px;
 }
 
+.home-awo-scene {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
 .home-primary {
   margin: 0 48px 48px;
   height: 96px;
@@ -207,6 +213,30 @@
 
 .home-primary-text {
   font-size: 32px;
+  font-weight: 600;
+  color: #151921;
+}
+
+.home-secondary {
+  margin: 0 48px 48px;
+  height: 72px;
+  border-radius: 999px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-accent-warm);
+  box-shadow: 0 8px 24px rgba(255, 179, 71, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-secondary:active {
+  transform: scale(0.97);
+}
+
+.home-secondary-text {
+  font-size: 26px;
   font-weight: 600;
   color: #151921;
 }

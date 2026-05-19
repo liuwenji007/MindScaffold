@@ -18,12 +18,12 @@ export default function Action() {
   const [selected, setSelected] = useState(-1);
 
   useEffect(() => {
-    if (!draft?.mirrorText) {
+    if (!draft?.reviewText) {
       Taro.redirectTo({ url: '/pages/index/index' });
     }
   }, [draft]);
 
-  if (!draft?.mirrorText) {
+  if (!draft?.reviewText) {
     return (
       <View className='action-page-loading'>
         <Text>正在回到首页…</Text>
@@ -49,7 +49,7 @@ export default function Action() {
       }),
       intensity: draft.intensity,
       input: draft.input,
-      mirrorText: draft.mirrorText || '',
+      mirrorText: draft.reviewText || '',
       action: pick.text,
       duration: pick.duration,
       status: 'pending',

@@ -31,6 +31,7 @@ interface EmotionState {
   cancelFlow: () => void;
   setDeconstructionAnswers: (answers: Record<string, unknown>) => void;
   setMirrorText: (text: string) => void;
+  setReviewText: (text: string) => void;
   setDraftChatHistory: (messages: ChatMessage[]) => void;
   addCard: (card: AwEmotionCard) => void;
   updateCard: (id: string, updates: Partial<AwEmotionCard>) => void;
@@ -61,7 +62,8 @@ export const useEmotionStore = create<EmotionState>((set) => ({
         }),
         intensity,
         input,
-        deconstructionAnswers: {}
+        deconstructionAnswers: {},
+        reviewText: undefined
       },
       historyChatCardId: null
     }),
@@ -78,6 +80,11 @@ export const useEmotionStore = create<EmotionState>((set) => ({
   setMirrorText: (text) =>
     set((s) =>
       s.draft ? { draft: { ...s.draft, mirrorText: text } } : {}
+    ),
+
+  setReviewText: (text) =>
+    set((s) =>
+      s.draft ? { draft: { ...s.draft, reviewText: text } } : {}
     ),
 
   setDraftChatHistory: (messages) =>

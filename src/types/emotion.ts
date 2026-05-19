@@ -58,6 +58,6 @@ export interface FlowDraft {
   intensity: number;
   input: string;
   deconstructionAnswers: Record<string, unknown>;
-  mirrorText?: string;
+  reviewText?: string;
   chatHistory?: ChatMessage[];
 }

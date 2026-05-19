@@ -1,0 +1,433 @@
+.awo-pixel-scene {
+  position: relative;
+  width: 300px;
+  height: 280px;
+  margin: 0 auto;
+  background: linear-gradient(160deg, #20150e 0%, #2c1a10 40%, #20150e 80%);
+  border-radius: 24px;
+  overflow: hidden;
+
+  /* ambient glow from fireplace */
+  &::before {
+    content: '';
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+    width: 200px;
+    height: 180px;
+    background: radial-gradient(ellipse at 40% 60%, rgba(255, 140, 66, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ===== window / night sky ===== */
+
+  .scene-sky {
+    position: absolute;
+    left: 20px;
+    top: 12px;
+    width: 260px;
+    height: 72px;
+    background: #1a1a2e;
+    border: 2px solid #4a3020;
+    border-radius: 6px;
+    overflow: hidden;
+
+    /* window cross frame (horizontal bar) */
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: #3d2518;
+      pointer-events: none;
+    }
+  }
+
+  /* window vertical divider */
+  .scene-sky-divider {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #3d2518;
+    pointer-events: none;
+  }
+
+  /* ===== stars ===== */
+
+  .scene-star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    animation: star-twinkle 2s ease-in-out infinite;
+
+    &--1 { left: 45px; top: 22px; }
+    &--2 { left: 190px; top: 18px; animation-delay: 0.5s; }
+    &--3 { left: 110px; top: 46px; animation-delay: 1s; }
+    &--4 { left: 200px; top: 56px; animation-delay: 1.5s; }
+    &--5 { left: 250px; top: 32px; animation-delay: 0.3s; }
+  }
+
+  /* ===== fireplace ===== */
+
+  .scene-fireplace {
+    position: absolute;
+    left: 194px;
+    top: 116px;
+    width: 80px;
+    height: 84px;
+  }
+
+  .fp-mantel {
+    width: 80px;
+    height: 6px;
+    background: #6b4226;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .fp-body {
+    width: 72px;
+    height: 64px;
+    margin: 0 auto;
+    background: #5c3a21;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .fp-firebox {
+    width: 46px;
+    height: 50px;
+    background: #1a0f08;
+    border-radius: 20px 20px 4px 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fp-hearth {
+    width: 80px;
+    height: 5px;
+    background: #4a2e18;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* ===== flame pixel art (8x7 grid @ 6px) ===== */
+
+  .flame-pixel {
+    position: absolute;
+    bottom: 2px;
+    left: 5px;
+    width: 1px;
+    height: 1px;
+    transform-origin: center bottom;
+    animation: flame-flicker 0.6s ease-in-out infinite;
+    box-shadow:
+      18px 0px #ff8c42,
+      24px 0px #ff8c42,
+      12px 6px #ff8c42,
+      18px 6px #ffb347,
+      24px 6px #ff8c42,
+      6px 12px #ff8c42,
+      12px 12px #ffb347,
+      18px 12px #ff8c42,
+      24px 12px #ff8c42,
+      30px 12px #ff8c42,
+      6px 18px #ff8c42,
+      12px 18px #ffb347,
+      18px 18px #ffb347,
+      24px 18px #ff8c42,
+      30px 18px #ff8c42,
+      6px 24px #ff8c42,
+      12px 24px #ffb347,
+      18px 24px #ff8c42,
+      24px 24px #ff8c42,
+      12px 30px #ff8c42,
+      18px 30px #ff8c42,
+      24px 36px #ff8c42;
+  }
+
+  /* secondary flame (slightly offset, slower) */
+  .flame-pixel-2 {
+    position: absolute;
+    bottom: 4px;
+    left: 17px;
+    width: 1px;
+    height: 1px;
+    transform-origin: center bottom;
+    animation: flame-flicker 0.8s ease-in-out infinite reverse;
+    box-shadow:
+      6px 0px #ff8c42,
+      12px 0px #ff8c42,
+      0px 6px #ff8c42,
+      6px 6px #ffb347,
+      12px 6px #ff8c42,
+      0px 12px #ff8c42,
+      6px 12px #ffb347,
+      12px 12px #ff8c42,
+      18px 12px #ff8c42,
+      0px 18px #ff8c42,
+      6px 18px #ffb347,
+      12px 18px #ff8c42,
+      0px 24px #ff8c42,
+      6px 24px #ff8c42;
+  }
+
+  /* ===== Awo character (12x10 grid @ 10px) ===== */
+
+  .scene-awo-wrap {
+    position: absolute;
+    left: 24px;
+    top: 102px;
+    width: 120px;
+    height: 100px;
+    animation: awo-breathe 3s ease-in-out infinite;
+  }
+
+  .awo-body {
+    width: 1px;
+    height: 1px;
+    box-shadow:
+      20px 0px #e0cbb0,
+      30px 0px #e0cbb0,
+      40px 0px #e0cbb0,
+      50px 0px #e0cbb0,
+      60px 0px #e0cbb0,
+      70px 0px #e0cbb0,
+      80px 0px #e0cbb0,
+      90px 0px #e0cbb0,
+      10px 10px #e0cbb0,
+      20px 10px #e0cbb0,
+      30px 10px #f5e6d3,
+      40px 10px #f5e6d3,
+      50px 10px #f5e6d3,
+      60px 10px #f5e6d3,
+      70px 10px #f5e6d3,
+      80px 10px #f5e6d3,
+      90px 10px #e0cbb0,
+      100px 10px #e0cbb0,
+      0px 20px #e0cbb0,
+      10px 20px #e0cbb0,
+      20px 20px #f5e6d3,
+      30px 20px #f5e6d3,
+      40px 20px #f5e6d3,
+      50px 20px #f5e6d3,
+      60px 20px #f5e6d3,
+      70px 20px #f5e6d3,
+      80px 20px #f5e6d3,
+      90px 20px #f5e6d3,
+      100px 20px #e0cbb0,
+      110px 20px #e0cbb0,
+      0px 30px #e0cbb0,
+      10px 30px #e0cbb0,
+      20px 30px #f5e6d3,
+      30px 30px #f5e6d3,
+      40px 30px #f5e6d3,
+      50px 30px #f5e6d3,
+      60px 30px #f5e6d3,
+      70px 30px #f5e6d3,
+      80px 30px #f5e6d3,
+      90px 30px #f5e6d3,
+      100px 30px #e0cbb0,
+      110px 30px #e0cbb0,
+      0px 40px #e0cbb0,
+      10px 40px #e0cbb0,
+      20px 40px #f5e6d3,
+      30px 40px #f5e6d3,
+      40px 40px #f5e6d3,
+      50px 40px #f5e6d3,
+      60px 40px #f5e6d3,
+      70px 40px #f5e6d3,
+      80px 40px #f5e6d3,
+      90px 40px #f5e6d3,
+      100px 40px #e0cbb0,
+      110px 40px #e0cbb0,
+      0px 50px #e0cbb0,
+      10px 50px #e0cbb0,
+      20px 50px #f5e6d3,
+      30px 50px #f5e6d3,
+      40px 50px #5c3a21,
+      50px 50px #5c3a21,
+      60px 50px #f5e6d3,
+      70px 50px #f5e6d3,
+      80px 50px #5c3a21,
+      90px 50px #5c3a21,
+      100px 50px #e0cbb0,
+      110px 50px #e0cbb0,
+      0px 60px #e0cbb0,
+      10px 60px #e0cbb0,
+      20px 60px #f5e6d3,
+      30px 60px #f5e6d3,
+      40px 60px #f5e6d3,
+      50px 60px #f5e6d3,
+      60px 60px #f5e6d3,
+      70px 60px #f5e6d3,
+      80px 60px #f5e6d3,
+      90px 60px #f5e6d3,
+      100px 60px #e0cbb0,
+      110px 60px #e0cbb0,
+      10px 70px #e0cbb0,
+      20px 70px #e0cbb0,
+      30px 70px #ffb3b3,
+      40px 70px #ffb3b3,
+      50px 70px #f5e6d3,
+      60px 70px #f5e6d3,
+      70px 70px #ffb3b3,
+      80px 70px #ffb3b3,
+      90px 70px #e0cbb0,
+      100px 70px #e0cbb0,
+      20px 80px #e0cbb0,
+      30px 80px #e0cbb0,
+      40px 80px #e0cbb0,
+      50px 80px #e0cbb0,
+      60px 80px #e0cbb0,
+      70px 80px #e0cbb0,
+      80px 80px #e0cbb0,
+      90px 80px #e0cbb0,
+      40px 90px #e0cbb0,
+      50px 90px #e0cbb0,
+      60px 90px #e0cbb0,
+      70px 90px #e0cbb0;
+  }
+
+  /* warm firelight gradient on Awo's right side */
+  .awo-glow {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120px;
+    height: 100px;
+    background: linear-gradient(90deg, transparent 25%, rgba(255, 140, 66, 0.1) 75%, rgba(255, 179, 71, 0.08) 100%);
+    pointer-events: none;
+  }
+
+  /* ===== sofa ===== */
+
+  .scene-sofa {
+    position: absolute;
+    left: 14px;
+    top: 186px;
+    width: 150px;
+    height: 24px;
+    background: #5c3a21;
+    border-radius: 8px;
+    border-bottom: 4px solid #4a2e18;
+    box-sizing: border-box;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 5px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    /* sofa arm (left) */
+    &::after {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: -4px;
+      width: 8px;
+      height: 28px;
+      background: #5c3a21;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+  }
+
+  /* right sofa arm */
+  .sofa-arm-r {
+    position: absolute;
+    right: -6px;
+    top: -4px;
+    width: 8px;
+    height: 28px;
+    background: #5c3a21;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* ===== enter button ===== */
+
+  .scene-enter-btn {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 22px;
+    background: #ffb347;
+    border: 2px solid #e09530;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(255, 179, 71, 0.25);
+    transition: transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scene-enter-btn:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  .btn-text {
+    font-size: 22px;
+    color: #3d2b1a;
+    font-weight: 600;
+    line-height: 1;
+  }
+}
+
+/* ===== keyframes ===== */
+
+@keyframes flame-flicker {
+  0%, 100% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+  20% {
+    transform: scaleY(1.15) scaleX(0.92);
+    opacity: 0.85;
+  }
+  40% {
+    transform: scaleY(0.9) scaleX(1.08);
+    opacity: 0.95;
+  }
+  60% {
+    transform: scaleY(1.1) scaleX(0.95);
+    opacity: 0.88;
+  }
+  80% {
+    transform: scaleY(1.05) scaleX(1.02);
+    opacity: 1;
+  }
+}
+
+@keyframes awo-breathe {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.06);
+  }
+}
+
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

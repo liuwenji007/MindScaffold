@@ -119,7 +119,6 @@ function createDefaultMessages(seedText: string): ChatMessage[] {
 }
 
 export default function ChatPage() {
-  const draft = useEmotionStore(s => s.draft);
   const cards = useEmotionStore(s => s.cards);
   const historyChatCardId = useEmotionStore(s => s.historyChatCardId);
   const setHistoryChatCardId = useEmotionStore(s => s.setHistoryChatCardId);
@@ -134,11 +133,8 @@ export default function ChatPage() {
       }
       return createDefaultMessages(target?.mirrorText ?? '我在这里，愿意听你继续说。');
     }
-    if (draft?.mirrorText) {
-      return createDefaultMessages(draft.mirrorText);
-    }
     return createDefaultMessages('我在这里，愿意听你继续说。');
-  }, [cards, draft?.mirrorText, historyChatCardId]);
+  }, [cards, historyChatCardId]);
 
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
@@ -203,7 +199,7 @@ export default function ChatPage() {
       Taro.navigateBack();
       return;
     }
-    Taro.navigateTo({ url: '/pages/action/index' });
+    Taro.navigateTo({ url: '/pages/mirror/index' });
   };
 
   return (

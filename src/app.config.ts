@@ -5,7 +5,7 @@ export default defineAppConfig({
     'pages/history/index',
     'pages/tree/index',
     'pages/profile/index',
-    'pages/breakdown/index',
+    'pages/breakdown/index', // TODO: 废弃，后续删除
     'pages/mirror/index',
     'pages/chat/index',
     'pages/action/index',

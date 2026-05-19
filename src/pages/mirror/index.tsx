@@ -8,7 +8,7 @@ import './index.scss';
 
 export default function Mirror() {
   const draft = useEmotionStore(s => s.draft);
-  const setMirrorText = useEmotionStore(s => s.setMirrorText);
+  const setReviewText = useEmotionStore(s => s.setReviewText);
 
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState('');
@@ -24,11 +24,17 @@ export default function Mirror() {
     setLoading(true);
     setError('');
 
+    const chatHistory = draft.chatHistory ?? [];
+    if (chatHistory.length === 0) {
+      setText(buildFallbackCopy(draft.input));
+      setLoading(false);
+      return;
+    }
+
     void (async () => {
-      const res = await post<{ mirror_text: string }>('/mirror', {
+      const res = await post<{ review_text: string }>('/mirror/review', {
         input_text: draft.input,
-        intensity: draft.intensity,
-        deconstruction: draft.deconstructionAnswers || {},
+        chat_history: chatHistory.map(m => ({ role: m.role, content: m.content })),
       });
 
       if (res.error) {
@@ -37,14 +43,25 @@ export default function Mirror() {
         return;
       }
 
-      setText(res.data?.mirror_text || buildFallbackCopy(draft.input));
+      setText(res.data?.review_text || buildFallbackCopy(draft.input));
       setLoading(false);
     })();
   }, [draft, reloadKey]);
 
   const handleConfirm = () => {
-    setMirrorText(text);
-    Taro.navigateTo({ url: '/pages/chat/index' });
+    setReviewText(text);
+
+    // 异步提取用户画像（不阻塞页面跳转）
+    const chatHistory = draft.chatHistory ?? [];
+    if (chatHistory.length > 0) {
+      post('/profile/extract', {
+        chat_history: chatHistory.map(m => ({ role: m.role, content: m.content })),
+        input_text: draft.input,
+        review_text: text,
+      }).catch(() => {});
+    }
+
+    Taro.navigateTo({ url: '/pages/action/index' });
   };
 
   const handleRegenerate = () => {
@@ -64,7 +81,7 @@ export default function Mirror() {
             <AppIcon name='sparkles' size={40} color='#ffb347' />
           </View>
         </View>
-        <Text className='mirror-loading-text'>阿窝正在为你镜像情绪…</Text>
+        <Text className='mirror-loading-text'>阿窝正在回顾你们的对话…</Text>
       </View>
     );
   }
@@ -76,9 +93,9 @@ export default function Mirror() {
           <View className='mirror-badge-icon'>
             <AppIcon name='sparkles' size={14} color='#ffb347' />
           </View>
-          <Text className='mirror-badge-text'>AI 镜像重述</Text>
+          <Text className='mirror-badge-text'>对话复盘</Text>
         </View>
-        <Text className='mirror-heading'>这是我听到的你</Text>
+        <Text className='mirror-heading'>回看这段对话</Text>
 
         {error ? (
           <View className='mirror-card'>
@@ -97,7 +114,7 @@ export default function Mirror() {
             <Text>换一种说法</Text>
           </View>
           <View className='mirror-btn primary' onClick={handleConfirm}>
-            <Text>确认重述</Text>
+            <Text>确认</Text>
           </View>
         </View>
       </View>
@@ -107,6 +124,6 @@ export default function Mirror() {
 
 /** 后备文案：API 不可用时使用本地生成 */
 function buildFallbackCopy(input: string): string {
-  const frag = input ? `「${input}」` : '沉重';
-  return `听起来，你现在感到有些${frag}。这并不是你的错，大脑只是在试图保护你免受那些不确定性的伤害。我们可以试着把这些情绪看作是路过的云，而不是你本身。`;
+  const frag = input ? `「${input}」` : '你提到的那些事';
+  return `回顾了这段对话，${frag}看起来对你来说并不轻松。能把这些说出来本身就是一种勇气。或许可以试着把这些感受记在心里，然后给自己一个温柔的收尾。`;
 }
