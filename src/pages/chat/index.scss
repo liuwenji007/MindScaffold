@@ -22,14 +22,8 @@
   gap: 16px;
 }
 
-.chat-header-icon-wrap {
-  width: 64px;
-  height: 64px;
-  border-radius: 32px;
-  background: rgba(255, 179, 71, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.chat-header-ip {
+  flex-shrink: 0;
 }
 
 .chat-header-title {

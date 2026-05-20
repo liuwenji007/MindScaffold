@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { View, Text, Textarea, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { AppIcon } from '@/components/AppIcon';
+import IpHeadSprite from '@/components/IpHeadSprite';
 import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
 import { ensureChatSession, syncChatMessagesFromServer } from '@/services/chatSession';
@@ -143,6 +144,8 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+  /** 阿窝正在输出（含流式），用于左上角 ip-head 说话动画 */
+  const [aiSpeaking, setAiSpeaking] = useState(false);
   const [scrollIntoViewId, setScrollIntoViewId] = useState('');
   const [scrollTop, setScrollTop] = useState(0);
   const streamRef = useRef(false);
@@ -295,6 +298,7 @@ export default function ChatPage() {
       setMessages(nextMessages);
       setInput('');
       setTyping(true);
+      setAiSpeaking(true);
       streamRef.current = true;
       await persistMessages(nextMessages);
 
@@ -333,6 +337,7 @@ export default function ChatPage() {
         await persistMessages(merged);
       } finally {
         setTyping(false);
+        setAiSpeaking(false);
       }
     },
     [typing, persistMessages, setDraftCardId]
@@ -359,6 +364,8 @@ export default function ChatPage() {
 
   const handleFinish = () => {
     streamRef.current = false;
+    setAiSpeaking(false);
+    setTyping(false);
     if (historyChatCardId) {
       setHistoryChatCardId(null);
       Taro.navigateBack();
@@ -371,9 +378,7 @@ export default function ChatPage() {
     <View className='chat-page'>
       <View className='chat-header'>
         <View className='chat-header-left'>
-          <View className='chat-header-icon-wrap'>
-            <AppIcon name='wind' size={22} color='#ffb347' />
-          </View>
+          <IpHeadSprite speaking={aiSpeaking} size={72} className='chat-header-ip' />
           <Text className='chat-header-title'>阿窝对话中</Text>
         </View>
         <View className='chat-finish-btn' onClick={handleFinish}>
