@@ -5,7 +5,7 @@ import { useEmotionStore } from '@/store/emotionStore';
 import TabBar from '@/components/TabBar';
 import { AppIcon } from '@/components/AppIcon';
 import { FadeIn } from '@/components/motion';
-import AwoPixel from '@/components/AwoPixel';
+import HomeBgSprite from '@/components/HomeBgSprite';
 import './index.scss';
 
 export default function Index() {
@@ -24,46 +24,36 @@ export default function Index() {
 
   return (
     <View className='index-page'>
-      <FadeIn variant='fadeIn'>
-        <View className='header'>
-          <View className='home-logo-wrap'>
-            <View className='home-logo-glow' />
-            <View className='home-logo-icon'>
-              <AppIcon name='wind' size={32} color='#151921' />
-            </View>
-          </View>
-          <Text className='title'>阿窝睡了</Text>
-          <Text className='subtitle'>"把你的今天，放进软窝里"</Text>
-        </View>
-      </FadeIn>
+      <HomeBgSprite />
 
-      {/* Awo pixel scene */}
-      <View className='home-awo-scene'>
-        <AwoPixel onEnterPress={handleStart} />
+      <View className='index-hero-tagline'>
+        <Text className='index-hero-title'>阿窝睡了</Text>
+        <Text className='index-hero-subtitle'>把你的今天，放进软窝里</Text>
       </View>
 
-      <FadeIn variant='fadeInDelay'>
-        <View className='home-card'>
-          <Text className='home-card-title'>和阿窝说说话吧</Text>
-          <View className='home-input-wrap'>
-            <Input
-              className='home-textarea-input'
-              placeholder='可以简单说说什么事…（选填）'
-              placeholderClass='home-textarea-placeholder'
-              value={input}
-              maxlength={2000}
-              onInput={e => setInput(e.detail.value)}
-            />
+      <View className='index-page-content'>
+        <FadeIn variant='fadeInDelay'>
+          <View className='home-entry'>
+            <Text className='home-entry-greeting'>阿窝在这儿。</Text>
+            <Text className='home-entry-hint'>今天想聊点什么？</Text>
+            <View className='home-entry-input-wrap'>
+              <Input
+                className='home-entry-input'
+                placeholder='可以简单说说…（选填）'
+                placeholderClass='home-entry-input-placeholder'
+                value={input}
+                maxlength={2000}
+                onInput={e => setInput(e.detail.value)}
+                onConfirm={handleStart}
+              />
+            </View>
+            <View className='home-entry-btn' onClick={handleStart}>
+              <Text className='home-entry-btn-text'>和阿窝聊聊</Text>
+              <AppIcon name='arrowRight' size={14} color='#151921' />
+            </View>
           </View>
-        </View>
-      </FadeIn>
-
-      <FadeIn variant='fadeInDelay'>
-        <View className='home-secondary' onClick={handleStart}>
-          <Text className='home-secondary-text'>和阿窝聊聊</Text>
-          <AppIcon name='arrowRight' size={14} color='#151921' />
-        </View>
-      </FadeIn>
+        </FadeIn>
+      </View>
 
       <TabBar current='index' />
     </View>

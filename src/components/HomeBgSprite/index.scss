@@ -1,0 +1,45 @@
+/* 全屏铺底（高度由父级 bottom 扣 TabBar） */
+.home-bg-sprite {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--tab-bar-height);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.home-bg-sprite__clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.home-bg-sprite__sheet {
+  display: block;
+  flex-shrink: 0;
+}
+
+.home-bg-sprite__feather {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15, 18, 24, 0.55) 0%,
+      transparent 18%,
+      transparent 55%,
+      rgba(15, 18, 24, 0.35) 78%,
+      rgba(15, 18, 24, 0.85) 100%
+    ),
+    linear-gradient(
+      90deg,
+      var(--bg-primary) 0%,
+      transparent 6%,
+      transparent 94%,
+      var(--bg-primary) 100%
+    );
+}
