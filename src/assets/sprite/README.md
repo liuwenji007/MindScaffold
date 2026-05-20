@@ -2,15 +2,15 @@
 
 ## homeBg（`homeBg.png` / `homeBg.webp`）
 
-- **雪碧图**：1280 × 365 px
-- **布局**：**单排 8 帧**（每帧 160 × 365）
+- **雪碧图**：2560 × 711 px
+- **布局**：**单排 8 帧**（每帧 320 × 711）
 - **用途**：首页背景循环（壁炉火焰、窗外星星等微动）
 - **组件**：`src/components/HomeBgSprite/`
 - **分端**：H5 用 `homeBg.webp`，小程序等用 `homeBg.png`（见 `homeBgAsset.ts`）
 
-帧序：从左到右，帧 n 的 x = `n × 160`，y = `0`。
+帧序：从左到右，帧 n 的 x = `n × 320`，y = `0`。
 
-动画：`setInterval` 切换 `background-position`；按屏宽缩放铺满，竖向用 `cropTop`（锚点约 0.42）裁切。
+动画：`setInterval` + **整数像素** `background-position`（`frameStep = round(320×scale)`）；`cover` 铺满并 `coverOverscan≈1.08` 裁 AI 帧内黑边；`image-rendering: pixelated` 减抖动。
 
 旧版竖长条备份：`homeBg_bak.png`（2560×1440，勿再引用）。
 

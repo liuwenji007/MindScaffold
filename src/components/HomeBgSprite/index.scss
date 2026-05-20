@@ -19,27 +19,26 @@
 .home-bg-sprite__sheet {
   display: block;
   flex-shrink: 0;
+  /* 像素画：禁止双线性插值，减少帧间发糊/抖动 */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
+/* 仅上下轻渐变，去掉左右「黑边」叠层 */
 .home-bg-sprite__feather {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(15, 18, 24, 0.55) 0%,
-      transparent 18%,
-      transparent 55%,
-      rgba(15, 18, 24, 0.35) 78%,
-      rgba(15, 18, 24, 0.85) 100%
-    ),
-    linear-gradient(
-      90deg,
-      var(--bg-primary) 0%,
-      transparent 6%,
-      transparent 94%,
-      var(--bg-primary) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(15, 18, 24, 0.45) 0%,
+    transparent 14%,
+    transparent 62%,
+    rgba(15, 18, 24, 0.5) 82%,
+    rgba(15, 18, 24, 0.82) 100%
+  );
 }
