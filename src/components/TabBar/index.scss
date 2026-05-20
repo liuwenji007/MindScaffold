@@ -34,15 +34,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   margin-bottom: 4px;
   border-radius: 14px;
-  transition: background 0.25s ease;
+  transition: background 0.25s ease, transform 0.2s ease;
 }
 
 .tab-icon-wrap-active {
   background: rgba(255, 179, 71, 0.14);
+  transform: scale(1.04);
+}
+
+.tab-icon {
+  width: 44px;
+  height: 44px;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, transform 0.2s ease;
+}
+
+.tab-icon-active {
+  opacity: 1;
 }
 
 .tab-title {

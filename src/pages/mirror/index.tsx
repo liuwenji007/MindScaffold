@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro';
 import { useEmotionStore } from '@/store/emotionStore';
 import { post } from '@/services/api';
 import { AppIcon } from '@/components/AppIcon';
+import { LoadingScreen } from '@/components/LoadingSprite';
 import './index.scss';
 
 export default function Mirror() {
@@ -73,17 +74,7 @@ export default function Mirror() {
   }
 
   if (loading) {
-    return (
-      <View className='mirror-page-loading'>
-        <View className='mirror-loading-visual'>
-          <View className='mirror-loading-dot' />
-          <View className='mirror-loading-spark'>
-            <AppIcon name='sparkles' size={40} color='#ffb347' />
-          </View>
-        </View>
-        <Text className='mirror-loading-text'>阿窝正在回顾你们的对话…</Text>
-      </View>
-    );
+    return <LoadingScreen caption='阿窝正在回顾你们的对话…' />;
   }
 
   return (

@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { View, Text, Input, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { AppIcon } from '@/components/AppIcon';
+import { LoadingSprite } from '@/components/LoadingSprite';
 import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
 import { ensureChatSession, syncChatMessagesFromServer } from '@/services/chatSession';
@@ -143,27 +144,72 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
-  const [scrollAnchor, setScrollAnchor] = useState('chat-anchor-top');
+  const [scrollIntoViewId, setScrollIntoViewId] = useState('');
+  const [scrollTop, setScrollTop] = useState(0);
   const streamRef = useRef(false);
   const sessionIdRef = useRef<string | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
+  /** 仅进入页面时拉一次服务端历史，避免发送后因 store 更新重复 sync 覆盖乐观 UI */
+  const sessionBootstrapKeyRef = useRef<string | null>(null);
+
+  const scrollToBottom = useCallback(() => {
+    Taro.nextTick(() => {
+      setTimeout(() => {
+        const query = Taro.createSelectorQuery();
+        query.select('#chat-list').boundingClientRect();
+        query.exec(res => {
+          const height = res?.[0]?.height;
+          if (typeof height === 'number' && height > 0) {
+            setScrollTop(prev => (prev === height ? height + 1 : height));
+          }
+        });
+        setScrollIntoViewId('');
+        Taro.nextTick(() => setScrollIntoViewId('chat-anchor-bottom'));
+      }, 32);
+    });
+  }, []);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages, typing, scrollToBottom]);
+
+  useEffect(() => {
+    const bootstrapKey = historyChatCardId ?? '__draft__';
+    if (sessionBootstrapKeyRef.current === bootstrapKey) {
+      return;
+    }
+    sessionBootstrapKeyRef.current = bootstrapKey;
+    sessionIdRef.current = null;
+    setSessionReady(false);
+
     let cancelled = false;
     (async () => {
-      const candidateId = historyChatCardId ?? draft?.cardId ?? null;
+      const state = useEmotionStore.getState();
+      const currentDraft = state.draft;
+      const currentCards = state.cards;
+      const seedMessages = historyChatCardId
+        ? (() => {
+            const target = currentCards.find(c => c.id === historyChatCardId);
+            if (target?.chatHistory?.length) return target.chatHistory;
+            return createDefaultMessages(
+              target?.mirrorText ?? '我在这里，愿意听你继续说。'
+            );
+          })()
+        : createDefaultMessages('我在这里，愿意听你继续说。');
+
+      const candidateId = historyChatCardId ?? currentDraft?.cardId ?? null;
       const localCard = historyChatCardId
-        ? cards.find(c => c.id === historyChatCardId)
+        ? currentCards.find(c => c.id === historyChatCardId)
         : undefined;
 
       const id = await ensureChatSession({
         cardId: candidateId,
-        initialHistory: initialMessages,
-        draft: draft
+        initialHistory: seedMessages,
+        draft: currentDraft
           ? {
-              input: draft.input,
-              intensity: draft.intensity,
-              deconstruction: draft.deconstructionAnswers,
+              input: currentDraft.input,
+              intensity: currentDraft.intensity,
+              deconstruction: currentDraft.deconstructionAnswers,
             }
           : null,
         localCard,
@@ -179,30 +225,20 @@ export default function ChatPage() {
       if (historyChatCardId && id !== historyChatCardId && localCard) {
         replaceCardId(historyChatCardId, id, localCard);
         setHistoryChatCardId(id);
-      } else if (!historyChatCardId && draft && id !== draft.cardId) {
+      } else if (!historyChatCardId && currentDraft && id !== currentDraft.cardId) {
         setDraftCardId(id);
       }
 
       const serverMsgs = await syncChatMessagesFromServer(id);
-      if (!cancelled && serverMsgs.length > 0) {
-        setMessages(serverMsgs);
+      if (!cancelled && !streamRef.current) {
+        setMessages(serverMsgs.length > 0 ? serverMsgs : seedMessages);
+        setSessionReady(true);
       }
-      if (!cancelled) setSessionReady(true);
     })();
     return () => {
       cancelled = true;
     };
-  }, [
-    historyChatCardId,
-    initialMessages,
-    draft?.input,
-    draft?.intensity,
-    draft?.cardId,
-    cards,
-    replaceCardId,
-    setDraftCardId,
-    setHistoryChatCardId,
-  ]);
+  }, [historyChatCardId, replaceCardId, setDraftCardId, setHistoryChatCardId]);
 
   const persistMessages = async (next: ChatMessage[]) => {
     if (!historyChatCardId) {
@@ -248,7 +284,6 @@ export default function ChatPage() {
     const userMessage: ChatMessage = { role: 'user', content };
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
-    setScrollAnchor('chat-anchor-bottom');
     setInput('');
     setTyping(true);
     streamRef.current = true;
@@ -258,8 +293,17 @@ export default function ChatPage() {
       const onDelta = (acc: string) => {
         if (!streamRef.current) return;
         if (acc.length > 0) setTyping(false);
-        setMessages([...nextMessages, { role: 'ai', content: acc }]);
-        setScrollAnchor('chat-anchor-bottom');
+        setMessages(prev => {
+          const base =
+            prev.length >= nextMessages.length &&
+            prev[prev.length - 1]?.role === 'user' &&
+            prev[prev.length - 1]?.content === content
+              ? prev
+              : nextMessages;
+          const withoutPartialAi =
+            base.length > 0 && base[base.length - 1]?.role === 'ai' ? base.slice(0, -1) : base;
+          return [...withoutPartialAi, { role: 'ai', content: acc }];
+        });
       };
 
       const aiContent = await streamChat(sessionIdRef.current, content, onDelta);
@@ -278,7 +322,6 @@ export default function ChatPage() {
       await persistMessages(merged);
     } finally {
       setTyping(false);
-      setScrollAnchor('chat-anchor-bottom');
     }
   };
 
@@ -306,8 +349,15 @@ export default function ChatPage() {
         </View>
       </View>
 
-      <ScrollView className='chat-scroll' scrollY scrollWithAnimation scrollIntoView={scrollAnchor}>
-        <View className='chat-list'>
+      <ScrollView
+        id='chat-scroll'
+        className='chat-scroll'
+        scrollY
+        scrollWithAnimation
+        scrollIntoView={scrollIntoViewId}
+        scrollTop={scrollTop}
+      >
+        <View id='chat-list' className='chat-list'>
           <View id='chat-anchor-top' />
           {messages.map((item, index) => (
             <View
@@ -324,9 +374,7 @@ export default function ChatPage() {
           {typing ? (
             <View className='chat-row-ai'>
               <View className='chat-bubble-ai chat-bubble-ai-typing'>
-                <View className='chat-typing-dot chat-typing-dot-one' />
-                <View className='chat-typing-dot chat-typing-dot-two' />
-                <View className='chat-typing-dot chat-typing-dot-three' />
+                <LoadingSprite size='sm' />
               </View>
             </View>
           ) : null}

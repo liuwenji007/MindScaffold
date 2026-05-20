@@ -21,14 +21,15 @@ export default defineAppConfig({
   },
   tabBar: {
     custom: true,
-    color: '#7a7a7a',
-    selectedColor: '#81b29a',
-    backgroundColor: '#ffffff',
+    color: '#94a3b8',
+    selectedColor: '#ffb347',
+    backgroundColor: '#151921',
+    borderStyle: 'black',
     list: [
       { pagePath: 'pages/index/index', text: '首页' },
       { pagePath: 'pages/history/index', text: '历史' },
       { pagePath: 'pages/tree/index', text: '大树' },
-      { pagePath: 'pages/profile/index', text: '我的' }
-    ]
-  }
+      { pagePath: 'pages/profile/index', text: '我的' },
+    ],
+  },
 });

@@ -1,18 +1,8 @@
 import React from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { AppIcon } from '@/components/AppIcon';
+import { resolveTabIcon, TAB_ICON_META } from './tabIcons';
 import './index.scss';
-
-const ACCENT = '#ffb347';
-const MUTED = '#94a3b8';
-
-const TABS = [
-  { key: 'index', title: '首页', icon: 'home' as const, path: '/pages/index/index' },
-  { key: 'history', title: '历史', icon: 'history' as const, path: '/pages/history/index' },
-  { key: 'tree', title: '大树', icon: 'leaf' as const, path: '/pages/tree/index' },
-  { key: 'profile', title: '我的', icon: 'user' as const, path: '/pages/profile/index' }
-];
 
 interface TabBarProps {
   current?: string;
@@ -27,9 +17,8 @@ export default function TabBar({ current }: TabBarProps) {
 
   return (
     <View className='tab-bar'>
-      {TABS.map(tab => {
+      {TAB_ICON_META.map(tab => {
         const isActive = Boolean(currentPath?.includes(tab.key));
-        const color = isActive ? ACCENT : MUTED;
         return (
           <View
             key={tab.key}
@@ -37,7 +26,11 @@ export default function TabBar({ current }: TabBarProps) {
             onClick={() => handleTabClick(tab.path)}
           >
             <View className={`tab-icon-wrap ${isActive ? 'tab-icon-wrap-active' : ''}`}>
-              <AppIcon name={tab.icon} size={22} color={color} />
+              <Image
+                className={`tab-icon ${isActive ? 'tab-icon-active' : ''}`}
+                src={resolveTabIcon(tab.key)}
+                mode='aspectFit'
+              />
             </View>
             <Text className={`tab-title ${isActive ? 'tab-title-active' : ''}`}>{tab.title}</Text>
           </View>
