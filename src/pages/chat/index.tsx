@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { View, Text, Input, ScrollView } from '@tarojs/components';
+import { View, Text, Textarea, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { AppIcon } from '@/components/AppIcon';
-import { LoadingSprite } from '@/components/LoadingSprite';
 import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
 import { ensureChatSession, syncChatMessagesFromServer } from '@/services/chatSession';
@@ -151,6 +150,10 @@ export default function ChatPage() {
   const [sessionReady, setSessionReady] = useState(false);
   /** 仅进入页面时拉一次服务端历史，避免发送后因 store 更新重复 sync 覆盖乐观 UI */
   const sessionBootstrapKeyRef = useRef<string | null>(null);
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+  /** 首页带入的首句只自动发送一次 */
+  const initialHomeInputSentRef = useRef(false);
 
   const scrollToBottom = useCallback(() => {
     Taro.nextTick(() => {
@@ -240,89 +243,118 @@ export default function ChatPage() {
     };
   }, [historyChatCardId, replaceCardId, setDraftCardId, setHistoryChatCardId]);
 
-  const persistMessages = async (next: ChatMessage[]) => {
-    if (!historyChatCardId) {
+  const persistMessages = useCallback(async (next: ChatMessage[]) => {
+    const state = useEmotionStore.getState();
+    if (!state.historyChatCardId) {
       setDraftChatHistory(next);
     }
-    const cacheId = historyChatCardId ?? draft?.cardId ?? sessionIdRef.current;
+    const cacheId =
+      state.historyChatCardId ?? state.draft?.cardId ?? sessionIdRef.current;
     if (cacheId) {
       updateCard(cacheId, { chatHistory: next });
       await updateAwCard(cacheId, { chatHistory: next });
     }
-  };
+  }, [setDraftChatHistory, updateCard]);
 
-  const handleSend = async () => {
-    const content = input.trim();
-    if (!content || typing) return;
+  const sendMessage = useCallback(
+    async (rawContent: string) => {
+      const content = rawContent.trim();
+      if (!content || typing) return;
 
-    if (!sessionIdRef.current) {
-      const id = await ensureChatSession({
-        cardId: historyChatCardId ?? draft?.cardId ?? null,
-        initialHistory: messages,
-        draft: draft
-          ? {
-              input: draft.input,
-              intensity: draft.intensity,
-              deconstruction: draft.deconstructionAnswers,
-            }
-          : null,
-        localCard: historyChatCardId
-          ? cards.find(c => c.id === historyChatCardId)
-          : undefined,
-      });
-      if (!id) {
-        Taro.showToast({ title: '会话初始化失败，请稍后重试', icon: 'none' });
-        return;
-      }
-      sessionIdRef.current = id;
-      if (!historyChatCardId && draft) {
-        setDraftCardId(id);
-      }
-      setSessionReady(true);
-    }
+      const state = useEmotionStore.getState();
 
-    const userMessage: ChatMessage = { role: 'user', content };
-    const nextMessages = [...messages, userMessage];
-    setMessages(nextMessages);
-    setInput('');
-    setTyping(true);
-    streamRef.current = true;
-    await persistMessages(nextMessages);
-
-    try {
-      const onDelta = (acc: string) => {
-        if (!streamRef.current) return;
-        if (acc.length > 0) setTyping(false);
-        setMessages(prev => {
-          const base =
-            prev.length >= nextMessages.length &&
-            prev[prev.length - 1]?.role === 'user' &&
-            prev[prev.length - 1]?.content === content
-              ? prev
-              : nextMessages;
-          const withoutPartialAi =
-            base.length > 0 && base[base.length - 1]?.role === 'ai' ? base.slice(0, -1) : base;
-          return [...withoutPartialAi, { role: 'ai', content: acc }];
+      if (!sessionIdRef.current) {
+        const id = await ensureChatSession({
+          cardId: state.historyChatCardId ?? state.draft?.cardId ?? null,
+          initialHistory: messagesRef.current,
+          draft: state.draft
+            ? {
+                input: state.draft.input,
+                intensity: state.draft.intensity,
+                deconstruction: state.draft.deconstructionAnswers,
+              }
+            : null,
+          localCard: state.historyChatCardId
+            ? state.cards.find(c => c.id === state.historyChatCardId)
+            : undefined,
         });
-      };
+        if (!id) {
+          Taro.showToast({ title: '会话初始化失败，请稍后重试', icon: 'none' });
+          return;
+        }
+        sessionIdRef.current = id;
+        if (!state.historyChatCardId && state.draft) {
+          setDraftCardId(id);
+        }
+        setSessionReady(true);
+      }
 
-      const aiContent = await streamChat(sessionIdRef.current, content, onDelta);
-      if (!streamRef.current) return; // 用户已离开
+      const base = messagesRef.current;
+      const userMessage: ChatMessage = { role: 'user', content };
+      const nextMessages = [...base, userMessage];
+      setMessages(nextMessages);
+      setInput('');
+      setTyping(true);
+      streamRef.current = true;
+      await persistMessages(nextMessages);
 
-      const text = aiContent.trim() ? aiContent : FALLBACK_RESPONSE;
-      const aiMessage: ChatMessage = { role: 'ai', content: text };
-      const merged = [...nextMessages, aiMessage];
-      setMessages(merged);
-      await persistMessages(merged);
-    } catch {
-      if (!streamRef.current) return;
-      const aiMessage: ChatMessage = { role: 'ai', content: FALLBACK_RESPONSE };
-      const merged = [...nextMessages, aiMessage];
-      setMessages(merged);
-      await persistMessages(merged);
-    } finally {
-      setTyping(false);
+      try {
+        const onDelta = (acc: string) => {
+          if (!streamRef.current) return;
+          if (acc.length > 0) setTyping(false);
+          setMessages(prev => {
+            const head =
+              prev.length >= nextMessages.length &&
+              prev[prev.length - 1]?.role === 'user' &&
+              prev[prev.length - 1]?.content === content
+                ? prev
+                : nextMessages;
+            const withoutPartialAi =
+              head.length > 0 && head[head.length - 1]?.role === 'ai'
+                ? head.slice(0, -1)
+                : head;
+            return [...withoutPartialAi, { role: 'ai', content: acc }];
+          });
+        };
+
+        const aiContent = await streamChat(sessionIdRef.current!, content, onDelta);
+        if (!streamRef.current) return;
+
+        const text = aiContent.trim() ? aiContent : FALLBACK_RESPONSE;
+        const aiMessage: ChatMessage = { role: 'ai', content: text };
+        const merged = [...nextMessages, aiMessage];
+        setMessages(merged);
+        await persistMessages(merged);
+      } catch {
+        if (!streamRef.current) return;
+        const aiMessage: ChatMessage = { role: 'ai', content: FALLBACK_RESPONSE };
+        const merged = [...nextMessages, aiMessage];
+        setMessages(merged);
+        await persistMessages(merged);
+      } finally {
+        setTyping(false);
+      }
+    },
+    [typing, persistMessages, setDraftCardId]
+  );
+
+  /** 首页「和阿窝聊聊」填写的可选内容，进入对话后作为首条用户消息发出 */
+  useEffect(() => {
+    if (!sessionReady || historyChatCardId || initialHomeInputSentRef.current) {
+      return;
     }
+    const homeInput = draft?.input?.trim();
+    if (!homeInput) return;
+    if (messages.some(m => m.role === 'user')) {
+      initialHomeInputSentRef.current = true;
+      return;
+    }
+    initialHomeInputSentRef.current = true;
+    void sendMessage(homeInput);
+  }, [sessionReady, historyChatCardId, draft?.input, messages, sendMessage]);
+
+  const handleSend = () => {
+    void sendMessage(input);
   };
 
   const handleFinish = () => {
@@ -340,7 +372,7 @@ export default function ChatPage() {
       <View className='chat-header'>
         <View className='chat-header-left'>
           <View className='chat-header-icon-wrap'>
-            <AppIcon name='wind' size={18} color='#ffb347' />
+            <AppIcon name='wind' size={22} color='#ffb347' />
           </View>
           <Text className='chat-header-title'>阿窝对话中</Text>
         </View>
@@ -374,7 +406,11 @@ export default function ChatPage() {
           {typing ? (
             <View className='chat-row-ai'>
               <View className='chat-bubble-ai chat-bubble-ai-typing'>
-                <LoadingSprite size='sm' />
+                <View className='chat-typing-dots' aria-hidden>
+                  <View className='chat-typing-dot' />
+                  <View className='chat-typing-dot' />
+                  <View className='chat-typing-dot' />
+                </View>
               </View>
             </View>
           ) : null}
@@ -383,20 +419,22 @@ export default function ChatPage() {
       </ScrollView>
 
       <View className='chat-input-wrap'>
-        <Input
-          className='chat-input'
-          value={input}
-          maxlength={300}
-          placeholder='再说点什么...'
-          placeholderClass='chat-input-placeholder'
-          onInput={event => setInput(event.detail.value)}
-          onConfirm={handleSend}
-        />
+        <View className='chat-textarea-shell'>
+          <Textarea
+            className='chat-textarea'
+            value={input}
+            maxlength={300}
+            showConfirmBar={false}
+            placeholder='再说点什么...'
+            placeholderClass='chat-textarea-placeholder'
+            onInput={event => setInput(event.detail.value)}
+          />
+        </View>
         <View
           className={`chat-send-btn ${!input.trim() || !sessionReady ? 'chat-send-btn-disabled' : ''}`}
           onClick={handleSend}
         >
-          <AppIcon name='arrowRight' size={18} color='#151921' />
+          <AppIcon name='arrowRight' size={22} color='#151921' />
         </View>
       </View>
     </View>

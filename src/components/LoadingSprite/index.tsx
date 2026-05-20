@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text } from '@tarojs/components';
 import loadingSprite from '@/assets/sprite/loading.png';
 import './index.scss';
@@ -28,11 +28,39 @@ export const LOADING_FRAMES: ReadonlyArray<{ readonly x: number; readonly y: num
 
 export type LoadingSpriteSize = 'sm' | 'md' | 'lg';
 
+/** 取整像素，避免 background-position 亚像素导致像素画抖动 */
+function px(n: number): number {
+  return Math.round(n);
+}
+
 const DISPLAY_WIDTH: Record<LoadingSpriteSize, number> = {
   sm: 88,
   md: 200,
   lg: 260,
 };
+
+interface LoadingLayout {
+  displayW: number;
+  displayH: number;
+  sheetW: number;
+  sheetH: number;
+  positions: ReadonlyArray<{ readonly x: number; readonly y: number }>;
+}
+
+function buildLayout(size: LoadingSpriteSize): LoadingLayout {
+  const displayW = DISPLAY_WIDTH[size];
+  const scale = displayW / LOADING_SPRITE.frameWidth;
+  return {
+    displayW,
+    displayH: px(LOADING_SPRITE.frameHeight * scale),
+    sheetW: px(LOADING_SPRITE.sheetWidth * scale),
+    sheetH: px(LOADING_SPRITE.sheetHeight * scale),
+    positions: LOADING_FRAMES.map(({ x, y }) => ({
+      x: -px(x * scale),
+      y: -px(y * scale),
+    })),
+  };
+}
 
 export interface LoadingSpriteProps {
   size?: LoadingSpriteSize;
@@ -42,11 +70,8 @@ export interface LoadingSpriteProps {
 
 export function LoadingSprite({ size = 'md', caption, className = '' }: LoadingSpriteProps) {
   const [frameIndex, setFrameIndex] = useState(0);
-
-  const displayW = DISPLAY_WIDTH[size];
-  const scale = displayW / LOADING_SPRITE.frameWidth;
-  const displayH = LOADING_SPRITE.frameHeight * scale;
-  const { x, y } = LOADING_FRAMES[frameIndex]!;
+  const layout = useMemo(() => buildLayout(size), [size]);
+  const { x, y } = layout.positions[frameIndex]!;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -55,19 +80,26 @@ export function LoadingSprite({ size = 'md', caption, className = '' }: LoadingS
     return () => clearInterval(timer);
   }, []);
 
+  const sheetStyle = useMemo(
+    () => ({
+      width: `${layout.displayW}px`,
+      height: `${layout.displayH}px`,
+      backgroundImage: `url(${loadingSprite})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: `${layout.sheetW}px ${layout.sheetH}px`,
+      backgroundPosition: `${x}px ${y}px`,
+    }),
+    [layout, x, y]
+  );
+
   return (
-    <View className={`loading-sprite-wrap ${className}`.trim()}>
+    <View className={`loading-sprite-wrap loading-sprite-wrap--${size} ${className}`.trim()}>
       <View
-        className='loading-sprite'
-        style={{
-          width: `${displayW}px`,
-          height: `${displayH}px`,
-          backgroundImage: `url(${loadingSprite})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: `${LOADING_SPRITE.sheetWidth * scale}px ${LOADING_SPRITE.sheetHeight * scale}px`,
-          backgroundPosition: `-${x * scale}px -${y * scale}px`,
-        }}
-      />
+        className='loading-sprite-viewport'
+        style={{ width: `${layout.displayW}px`, height: `${layout.displayH}px` }}
+      >
+        <View className='loading-sprite' style={sheetStyle} />
+      </View>
       {caption ? <Text className='loading-sprite-caption'>{caption}</Text> : null}
     </View>
   );

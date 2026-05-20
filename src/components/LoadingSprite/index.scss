@@ -3,11 +3,25 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  flex-shrink: 0;
+}
+
+/* 固定裁切框，帧切换时外框尺寸不变 */
+.loading-sprite-viewport {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  contain: layout style paint;
 }
 
 .loading-sprite {
+  display: block;
   flex-shrink: 0;
-  /* 帧坐标与 background-position 由 index.tsx 内联样式按错开行计算 */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .loading-sprite-caption {
