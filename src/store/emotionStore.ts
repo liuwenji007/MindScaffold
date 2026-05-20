@@ -33,8 +33,10 @@ interface EmotionState {
   setMirrorText: (text: string) => void;
   setReviewText: (text: string) => void;
   setDraftChatHistory: (messages: ChatMessage[]) => void;
+  setDraftCardId: (cardId: string) => void;
   addCard: (card: AwEmotionCard) => void;
   updateCard: (id: string, updates: Partial<AwEmotionCard>) => void;
+  replaceCardId: (oldId: string, newId: string, updates?: Partial<AwEmotionCard>) => void;
   loadCards: (cards: AwEmotionCard[]) => void;
   setActiveTab: (tab: AwMainTab) => void;
   setEmotionPoints: (points: number) => void;
@@ -92,6 +94,9 @@ export const useEmotionStore = create<EmotionState>((set) => ({
       s.draft ? { draft: { ...s.draft, chatHistory: messages } } : {}
     ),
 
+  setDraftCardId: (cardId) =>
+    set((s) => (s.draft ? { draft: { ...s.draft, cardId } } : {})),
+
   addCard: (card) =>
     set((s) => ({
       cards: [card, ...s.cards.filter((c) => c.id !== card.id)]
@@ -101,6 +106,16 @@ export const useEmotionStore = create<EmotionState>((set) => ({
     set((s) => ({
       cards: s.cards.map((c) => (c.id === id ? { ...c, ...updates } : c))
     })),
+
+  replaceCardId: (oldId, newId, updates) =>
+    set((s) => {
+      const rest = s.cards.filter(c => c.id !== newId);
+      return {
+        cards: rest.map(c =>
+          c.id === oldId ? { ...c, ...updates, id: newId } : c
+        ),
+      };
+    }),
 
   loadCards: (cards) => set({ cards }),
 

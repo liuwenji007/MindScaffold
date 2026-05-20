@@ -58,6 +58,8 @@ export interface FlowDraft {
   intensity: number;
   input: string;
   deconstructionAnswers: Record<string, unknown>;
+  /** 服务端 emotion card id，进入聊天时创建 */
+  cardId?: string;
   reviewText?: string;
   chatHistory?: ChatMessage[];
 }

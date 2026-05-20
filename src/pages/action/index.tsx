@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { v4 as uuidv4 } from 'uuid';
 import { useEmotionStore } from '@/store/emotionStore';
 import { saveAwCard } from '@/services/storage';
+import {
+  createServerCard,
+  parseDurationMinutes,
+  patchServerCard,
+} from '@/services/cardApi';
 import { DESIGN_ACTIONS } from '@/config/designFlow';
 import type { AwEmotionCard } from '@/types/emotion';
 import './index.scss';
@@ -38,15 +42,49 @@ export default function Action() {
     }
     const pick = DESIGN_ACTIONS[selected];
     const now = Date.now();
+    const actionDuration = parseDurationMinutes(pick.duration);
+
+    let cardId = draft.cardId;
+    if (cardId) {
+      const ok = await patchServerCard(cardId, {
+        mirrorText: draft.reviewText || '',
+        actionText: pick.text,
+        actionDuration,
+        chatHistory: draft.chatHistory ?? [],
+        deconstruction: draft.deconstructionAnswers,
+      });
+      if (!ok) {
+        Taro.showToast({ title: '保存失败，请稍后重试', icon: 'none' });
+        return;
+      }
+    } else {
+      cardId =
+        (await createServerCard({
+          intensity: draft.intensity,
+          inputText: draft.input,
+          mirrorText: draft.reviewText || '',
+          actionText: pick.text,
+          actionDuration,
+          deconstruction: draft.deconstructionAnswers,
+          chatHistory: draft.chatHistory ?? [],
+        })) ?? undefined;
+      if (!cardId) {
+        Taro.showToast({ title: '创建记录失败，请稍后重试', icon: 'none' });
+        return;
+      }
+    }
+
     const card: AwEmotionCard = {
-      id: uuidv4(),
+      id: cardId,
       createdAt: draft.createdAt || now,
-      date: draft.date || new Date(now).toLocaleString('zh-CN', {
-        month: 'numeric',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
+      date:
+        draft.date ||
+        new Date(now).toLocaleString('zh-CN', {
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
       intensity: draft.intensity,
       input: draft.input,
       mirrorText: draft.reviewText || '',
@@ -54,7 +92,7 @@ export default function Action() {
       duration: pick.duration,
       status: 'pending',
       deconstructionAnswers: draft.deconstructionAnswers,
-      chatHistory: draft.chatHistory ?? []
+      chatHistory: draft.chatHistory ?? [],
     };
 
     await saveAwCard(card);

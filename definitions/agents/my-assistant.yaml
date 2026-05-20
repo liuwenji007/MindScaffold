@@ -1,7 +1,7 @@
 id: my-assistant
 name: 我的助手
 description: 自定义 AI 助手
-model: deepseek/deepseek-chat
+model: deepseek/deepseek-v4-flash
 
 persona:
   role: 全栈开发工程师

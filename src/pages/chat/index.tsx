@@ -1,9 +1,10 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { View, Text, Input, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { AppIcon } from '@/components/AppIcon';
 import { useEmotionStore } from '@/store/emotionStore';
 import { updateAwCard } from '@/services/storage';
+import { ensureChatSession, syncChatMessagesFromServer } from '@/services/chatSession';
 import { API } from '@/config/api';
 import { getToken } from '@/services/auth';
 import type { ChatMessage } from '@/types/emotion';
@@ -47,8 +48,8 @@ function consumeSseLine(line: string, onPiece: (piece: string) => void): void {
 
 // —— SSE 流式读取（结束时必须处理 buffer 残留行，否则最后一帧常丢失） ——
 async function streamChat(
-  cardId: string | null,
-  messages: ChatMessage[],
+  sessionId: string,
+  content: string,
   onDelta?: (accumulated: string) => void
 ): Promise<string> {
   const token = getToken();
@@ -61,8 +62,8 @@ async function streamChat(
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify({
-      card_id: cardId,
-      messages: messages.map(m => ({ role: m.role, content: m.content })),
+      session_id: sessionId,
+      content,
     }),
   });
 
@@ -120,10 +121,13 @@ function createDefaultMessages(seedText: string): ChatMessage[] {
 
 export default function ChatPage() {
   const cards = useEmotionStore(s => s.cards);
+  const draft = useEmotionStore(s => s.draft);
   const historyChatCardId = useEmotionStore(s => s.historyChatCardId);
   const setHistoryChatCardId = useEmotionStore(s => s.setHistoryChatCardId);
   const setDraftChatHistory = useEmotionStore(s => s.setDraftChatHistory);
+  const setDraftCardId = useEmotionStore(s => s.setDraftCardId);
   const updateCard = useEmotionStore(s => s.updateCard);
+  const replaceCardId = useEmotionStore(s => s.replaceCardId);
 
   const initialMessages = useMemo(() => {
     if (historyChatCardId) {
@@ -141,19 +145,105 @@ export default function ChatPage() {
   const [typing, setTyping] = useState(false);
   const [scrollAnchor, setScrollAnchor] = useState('chat-anchor-top');
   const streamRef = useRef(false);
+  const sessionIdRef = useRef<string | null>(null);
+  const [sessionReady, setSessionReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const candidateId = historyChatCardId ?? draft?.cardId ?? null;
+      const localCard = historyChatCardId
+        ? cards.find(c => c.id === historyChatCardId)
+        : undefined;
+
+      const id = await ensureChatSession({
+        cardId: candidateId,
+        initialHistory: initialMessages,
+        draft: draft
+          ? {
+              input: draft.input,
+              intensity: draft.intensity,
+              deconstruction: draft.deconstructionAnswers,
+            }
+          : null,
+        localCard,
+      });
+
+      if (cancelled || !id) {
+        if (!cancelled) setSessionReady(false);
+        return;
+      }
+
+      sessionIdRef.current = id;
+
+      if (historyChatCardId && id !== historyChatCardId && localCard) {
+        replaceCardId(historyChatCardId, id, localCard);
+        setHistoryChatCardId(id);
+      } else if (!historyChatCardId && draft && id !== draft.cardId) {
+        setDraftCardId(id);
+      }
+
+      const serverMsgs = await syncChatMessagesFromServer(id);
+      if (!cancelled && serverMsgs.length > 0) {
+        setMessages(serverMsgs);
+      }
+      if (!cancelled) setSessionReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    historyChatCardId,
+    initialMessages,
+    draft?.input,
+    draft?.intensity,
+    draft?.cardId,
+    cards,
+    replaceCardId,
+    setDraftCardId,
+    setHistoryChatCardId,
+  ]);
 
   const persistMessages = async (next: ChatMessage[]) => {
-    if (historyChatCardId) {
-      updateCard(historyChatCardId, { chatHistory: next });
-      await updateAwCard(historyChatCardId, { chatHistory: next });
-      return;
+    if (!historyChatCardId) {
+      setDraftChatHistory(next);
     }
-    setDraftChatHistory(next);
+    const cacheId = historyChatCardId ?? draft?.cardId ?? sessionIdRef.current;
+    if (cacheId) {
+      updateCard(cacheId, { chatHistory: next });
+      await updateAwCard(cacheId, { chatHistory: next });
+    }
   };
 
   const handleSend = async () => {
     const content = input.trim();
     if (!content || typing) return;
+
+    if (!sessionIdRef.current) {
+      const id = await ensureChatSession({
+        cardId: historyChatCardId ?? draft?.cardId ?? null,
+        initialHistory: messages,
+        draft: draft
+          ? {
+              input: draft.input,
+              intensity: draft.intensity,
+              deconstruction: draft.deconstructionAnswers,
+            }
+          : null,
+        localCard: historyChatCardId
+          ? cards.find(c => c.id === historyChatCardId)
+          : undefined,
+      });
+      if (!id) {
+        Taro.showToast({ title: '会话初始化失败，请稍后重试', icon: 'none' });
+        return;
+      }
+      sessionIdRef.current = id;
+      if (!historyChatCardId && draft) {
+        setDraftCardId(id);
+      }
+      setSessionReady(true);
+    }
 
     const userMessage: ChatMessage = { role: 'user', content };
     const nextMessages = [...messages, userMessage];
@@ -172,7 +262,7 @@ export default function ChatPage() {
         setScrollAnchor('chat-anchor-bottom');
       };
 
-      const aiContent = await streamChat(historyChatCardId, [userMessage], onDelta);
+      const aiContent = await streamChat(sessionIdRef.current, content, onDelta);
       if (!streamRef.current) return; // 用户已离开
 
       const text = aiContent.trim() ? aiContent : FALLBACK_RESPONSE;
@@ -254,7 +344,10 @@ export default function ChatPage() {
           onInput={event => setInput(event.detail.value)}
           onConfirm={handleSend}
         />
-        <View className={`chat-send-btn ${!input.trim() ? 'chat-send-btn-disabled' : ''}`} onClick={handleSend}>
+        <View
+          className={`chat-send-btn ${!input.trim() || !sessionReady ? 'chat-send-btn-disabled' : ''}`}
+          onClick={handleSend}
+        >
           <AppIcon name='arrowRight' size={18} color='#151921' />
         </View>
       </View>
